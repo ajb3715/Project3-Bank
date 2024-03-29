@@ -74,6 +74,12 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 
+typedef struct WallClock {
+    int hour;
+    int minute;
+    int second;
+};
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

@@ -72,12 +72,7 @@ const osThreadAttr_t Manager_attributes = {
   .priority = (osPriority_t) osPriorityLow,
 };
 /* USER CODE BEGIN PV */
-struct WallClock {
-    int hour;
-    int minute;
-    int second;
-    pthread_mutex_t mutex; // Mutex for synchronization
-};
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
