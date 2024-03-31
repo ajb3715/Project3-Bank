@@ -28,6 +28,8 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_hal.h"
+#include <pthread.h>
+
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -74,11 +76,43 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 
-typedef struct WallClock {
+extern pthread_mutex_t mutex1;
+
+typedef struct {
     int hour;
     int minute;
     int second;
-};
+} WallClock;
+
+typedef struct {
+	//identification
+	int id;
+
+	//metrics
+	int customers_served;
+	WallClock total_time_working;
+	WallClock total_time_waiting;
+
+	WallClock max_time_working;
+	WallClock max_time_waiting;
+
+	//break metrics
+	int num_breaks;
+	WallClock time_break;
+	//AVG break will be calculated using the time on break divided by num break
+	WallClock current_break;
+	WallClock max_break;
+	WallClock min_break;
+	WallClock total_break;
+
+
+} Teller;
+
+typedef struct {
+	int teller_id;
+	WallClock start_break;
+	WallClock break_duration;
+} Breaker;
 
 /* USER CODE END Private defines */
 
