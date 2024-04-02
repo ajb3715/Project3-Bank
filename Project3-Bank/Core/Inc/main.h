@@ -31,6 +31,7 @@ extern "C" {
 #include <pthread.h>
 
 
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -76,6 +77,7 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 
+//Single Mutex variable for controlling program
 extern pthread_mutex_t mutex1;
 
 typedef struct {
@@ -87,6 +89,8 @@ typedef struct {
 typedef struct {
 	//identification
 	int id;
+	int status; // 0 is waiting, 1 is servicing, 2 is breaking
+	int take_break; // 0 is don't take break, 1 is break needs to be taken
 
 	//metrics
 	int customers_served;
@@ -109,9 +113,17 @@ typedef struct {
 } Teller;
 
 typedef struct {
-	int teller_id;
-	WallClock start_break;
-	WallClock break_duration;
+	//The breaker should
+	//First teller
+	WallClock start_break1;
+	WallClock break_duration1;
+	//First teller
+	WallClock start_break2;
+	WallClock break_duration2;
+	//First teller
+	WallClock start_break3;
+	WallClock break_duration3;
+
 } Breaker;
 
 /* USER CODE END Private defines */
