@@ -28,9 +28,6 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_hal.h"
-#include <pthread.h>
-
-
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -77,8 +74,6 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 
-//Single Mutex variable for controlling program
-extern pthread_mutex_t mutex1;
 
 typedef struct {
     int hour;

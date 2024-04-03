@@ -19,7 +19,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
-#include "clock.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -42,6 +41,8 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+TIM_HandleTypeDef htim6;
+
 UART_HandleTypeDef huart2;
 
 /* Definitions for Tellers */
@@ -72,6 +73,22 @@ const osThreadAttr_t Manager_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for TELLER */
+osMessageQueueId_t TELLERHandle;
+const osMessageQueueAttr_t TELLER_attributes = {
+  .name = "TELLER"
+};
+/* Definitions for CUSTOMER */
+osMessageQueueId_t CUSTOMERHandle;
+const osMessageQueueAttr_t CUSTOMER_attributes = {
+  .name = "CUSTOMER"
+};
+/* Definitions for MUTEX */
+osMutexId_t MUTEXHandle;
+const osMutexAttr_t MUTEX_attributes = {
+  .name = "MUTEX",
+  .attr_bits = osMutexRecursive,
+};
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -80,6 +97,7 @@ const osThreadAttr_t Manager_attributes = {
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
+static void MX_TIM6_Init(void);
 void StartTellers(void *argument);
 void StartCustomers(void *argument);
 void StartClock(void *argument);
@@ -123,12 +141,17 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
+  MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
 
   /* Init scheduler */
   osKernelInitialize();
+
+  /* Create the recursive mutex(es) */
+  /* creation of MUTEX */
+  MUTEXHandle = osMutexNew(&MUTEX_attributes);
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
@@ -141,6 +164,13 @@ int main(void)
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
+
+  /* Create the queue(s) */
+  /* creation of TELLER */
+  TELLERHandle = osMessageQueueNew (64, sizeof(uint64_t), &TELLER_attributes);
+
+  /* creation of CUSTOMER */
+  CUSTOMERHandle = osMessageQueueNew (64, sizeof(uint64_t), &CUSTOMER_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -229,6 +259,44 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief TIM6 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM6_Init(void)
+{
+
+  /* USER CODE BEGIN TIM6_Init 0 */
+
+  /* USER CODE END TIM6_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM6_Init 1 */
+
+  /* USER CODE END TIM6_Init 1 */
+  htim6.Instance = TIM6;
+  htim6.Init.Prescaler = 600;
+  htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim6.Init.Period = 222;
+  htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM6_Init 2 */
+
+  /* USER CODE END TIM6_Init 2 */
+
 }
 
 /**
