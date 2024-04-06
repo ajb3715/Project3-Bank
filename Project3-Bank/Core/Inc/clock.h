@@ -8,7 +8,8 @@
 
 extern WallClock Clock;
 
-void clock_init(void);
+void clock_init(WallClock Clock);
 void clock_increment(WallClock Clock);
+void add_clocks(WallClock Clock1, WallClock Clock2);
 
 

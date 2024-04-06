@@ -385,6 +385,7 @@ static void MX_GPIO_Init(void)
 void StartTellers(void *argument)
 {
   /* USER CODE BEGIN 5 */
+	//Initialize 3 tellers
   /* Infinite loop */
   for(;;)
   {

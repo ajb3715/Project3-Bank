@@ -87,19 +87,29 @@ typedef struct {
 	int status; // 0 is waiting, 1 is servicing, 2 is breaking
 	int take_break; // 0 is don't take break, 1 is break needs to be taken
 
+	//service function
+	WallClock service_end_time;
+
 	//metrics
 	int customers_served;
 	WallClock total_time_working;
 	WallClock total_time_waiting;
 
+	WallClock current_time_working;
+	WallClock current_time_waiting;
+
 	WallClock max_time_working;
 	WallClock max_time_waiting;
 
-	//break metrics
-	int num_breaks;
-	WallClock time_break;
-	//AVG break will be calculated using the time on break divided by num break
+	//break functions
+	WallClock break_end;
+	//Tracks how long the current break is;
 	WallClock current_break;
+
+	//break metrics
+	//AVG break will be calculated using the time on break divided by num break
+
+	int num_breaks;
 	WallClock max_break;
 	WallClock min_break;
 	WallClock total_break;
