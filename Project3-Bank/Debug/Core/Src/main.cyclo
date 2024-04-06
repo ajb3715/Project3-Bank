@@ -4,7 +4,7 @@
 ../Core/Src/main.c:307:13:MX_USART2_UART_Init	2
 ../Core/Src/main.c:342:13:MX_GPIO_Init	1
 ../Core/Src/main.c:385:6:StartTellers	1
-../Core/Src/main.c:403:6:StartCustomers	1
-../Core/Src/main.c:421:6:StartClock	1
-../Core/Src/main.c:439:6:StartManager	1
-../Core/Src/main.c:454:6:Error_Handler	1
+../Core/Src/main.c:404:6:StartCustomers	1
+../Core/Src/main.c:422:6:StartClock	1
+../Core/Src/main.c:440:6:StartManager	1
+../Core/Src/main.c:455:6:Error_Handler	1

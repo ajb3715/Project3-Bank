@@ -43,23 +43,23 @@ void initialize_tellers(void) {
 //Maybe Put entire thing inside a case statement if at all possible,
 //Would Simplify logic and speed it up
 void manage_tellers(void){
-	int i = 1;
-	for (i; i < 4; i++) {
+	int i;
+	for (i = 1; i < 4; i++) {
 		switch (tellers[i].status){
 		//Teller Currently Breaking
 		case 2:
 			//If teller is on break and it isn't over
-			if(tellers[i].current_break != tellers[i].break_end){
+			if(clock_compare(tellers[i].current_break,tellers[i].break_end) != 1){
 				//go onto next teller
 				clock_increment(tellers[i].current_break);
 				break;
 			}
 			//If teller is on break and it is over
-			if(Clock != tellers[i].break_end){
-				if(tellers[i].current_break > tellers[i].max_break){
+			if(clock_compare(tellers[i].current_break,tellers[i].break_end) == 1){
+				if(clock_compare(tellers[i].current_break,tellers[i].max_break) == 0){
 					tellers[i].max_break = tellers[i].current_break;
 				}
-				if(tellers[i].current_break < tellers[i].min_break){
+				if(clock_compare(tellers[i].current_break,tellers[i].min_break) == 2){
 					tellers[i].min_break = tellers[i].current_break;
 				}
 				add_clocks(tellers[i].total_break, tellers[i].current_break);
@@ -79,7 +79,7 @@ void manage_tellers(void){
 			}
 			//If teller is waiting and needs to go on break
 			if(tellers[i].take_break == 1){
-				tellers[i].status == 2;
+				tellers[i].status = 2;
 				switch (i){
 				case 1:
 					//Do with initialized Breaker in Breakers.C
@@ -93,8 +93,8 @@ void manage_tellers(void){
 				default:
 					break;
 				}
-				tellers[i].take_break == 0;
-				if(tellers[i].current_time_waiting > tellers[i].max_time_waiting){
+				tellers[i].take_break = 0;
+				if(clock_compare(tellers[i].current_time_waiting,tellers[i].max_time_waiting) == 0){
 					tellers[i].max_time_waiting = tellers[i].current_time_waiting;
 				}
 				add_clocks(tellers[i].total_time_waiting,tellers[i].current_time_waiting);
@@ -105,13 +105,13 @@ void manage_tellers(void){
 		//Teller currently Servicing
 		case 1:
 			//If teller is servicing and not finished
-			if(tellers[i].current_time_working != tellers[i].service_end_time){
+			if(clock_compare(tellers[i].current_time_working,tellers[i].service_end_time) == 1){
 				clock_increment(tellers[i].current_time_working);
 				break;
 			}
 			//If teller is servicing and finished
-			if(tellers[i].current_time_working == tellers[i].service_end_time){
-				if(tellers[i].current_time_working > tellers[i].max_time_working){
+			if(clock_compare(tellers[i].current_time_working,tellers[i].service_end_time) == 1){
+				if(clock_compare(tellers[i].current_time_working,tellers[i].max_time_working) == 0){
 					tellers[i].max_time_working = tellers[i].current_time_working;
 				}
 				add_clocks(tellers[i].total_time_working,tellers[i].current_time_working);
@@ -122,8 +122,6 @@ void manage_tellers(void){
 			}
 		}
 			//Case Break
-			break;
-		default:
 			break;
 	}
 }

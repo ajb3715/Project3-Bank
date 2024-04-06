@@ -1,2 +1,5 @@
 ../Core/Src/clock.c:17:6:clock_init	1
-../Core/Src/clock.c:24:6:clock_increment	3
+../Core/Src/clock.c:24:6:day_init	1
+../Core/Src/clock.c:31:6:clock_increment	3
+../Core/Src/clock.c:50:6:add_clocks	4
+../Core/Src/clock.c:74:5:clock_compare	10

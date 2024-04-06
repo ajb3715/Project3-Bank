@@ -29,23 +29,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
  12 .comment      00000043  00000000  00000000  00020040  2**0
                   CONTENTS, READONLY
- 13 .debug_info   0001925b  00000000  00000000  00020083  2**0
+ 13 .debug_info   000192e3  00000000  00000000  00020083  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_abbrev 000033be  00000000  00000000  000392de  2**0
+ 14 .debug_abbrev 000033de  00000000  00000000  00039366  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_aranges 00001660  00000000  00000000  0003c6a0  2**3
+ 15 .debug_aranges 00001678  00000000  00000000  0003c748  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_rnglists 0000116a  00000000  00000000  0003dd00  2**0
+ 16 .debug_rnglists 0000117d  00000000  00000000  0003ddc0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  00027683  00000000  00000000  0003ee6a  2**0
+ 17 .debug_macro  00027683  00000000  00000000  0003ef3d  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   00018f01  00000000  00000000  000664ed  2**0
+ 18 .debug_line   00018fe8  00000000  00000000  000665c0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000fc300  00000000  00000000  0007f3ee  2**0
+ 19 .debug_str    000fc330  00000000  00000000  0007f5a8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .debug_frame  00005e9c  00000000  00000000  0017b6f0  2**2
+ 20 .debug_frame  00005f24  00000000  00000000  0017b8d8  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 0000007a  00000000  00000000  0018158c  2**0
+ 21 .debug_line_str 0000007a  00000000  00000000  001817fc  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -970,6 +970,7 @@ void StartTellers(void *argument)
  8000828:	af00      	add	r7, sp, #0
  800082a:	6078      	str	r0, [r7, #4]
   /* USER CODE BEGIN 5 */
+	//Initialize 3 tellers
   /* Infinite loop */
   for(;;)
   {
