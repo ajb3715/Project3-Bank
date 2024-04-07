@@ -19,10 +19,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
-#include "clock.h"
-#include "teller.h"
-#include "breaker.h"
-
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -79,16 +75,6 @@ const osThreadAttr_t Manager_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
-/* Definitions for TELLER */
-osMessageQueueId_t TELLERHandle;
-const osMessageQueueAttr_t TELLER_attributes = {
-  .name = "TELLER"
-};
-/* Definitions for CUSTOMER */
-osMessageQueueId_t CUSTOMERHandle;
-const osMessageQueueAttr_t CUSTOMER_attributes = {
-  .name = "CUSTOMER"
-};
 /* Definitions for MUTEX */
 osMutexId_t MUTEXHandle;
 const osMutexAttr_t MUTEX_attributes = {
@@ -116,6 +102,7 @@ void StartManager(void *argument);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
 
 /* USER CODE END 0 */
 
@@ -172,13 +159,6 @@ int main(void)
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
-
-  /* Create the queue(s) */
-  /* creation of TELLER */
-  TELLERHandle = osMessageQueueNew (64, sizeof(uint64_t), &TELLER_attributes);
-
-  /* creation of CUSTOMER */
-  CUSTOMERHandle = osMessageQueueNew (64, sizeof(uint64_t), &CUSTOMER_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */

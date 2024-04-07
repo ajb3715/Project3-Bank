@@ -134,6 +134,7 @@ typedef struct {
 
 } Breaker;
 
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
