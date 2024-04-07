@@ -1,15 +1,16 @@
 /*
- * led.c
+ * teller.c
  *
  *  Created on: April 5, 2024
  *      Author: Beekman
  */
 
+#include <clock.h>
 #include "stm32l476xx.h"
 #include "main.h"
-#include "clock.h"
+#include "breaker.h"
 
-Teller tellers[3];
+Teller tellers[4];
 
 void initialize_tellers(void) {
     for (int i = 1; i < 4; i++) {
@@ -79,16 +80,23 @@ void manage_tellers(void){
 			}
 			//If teller is waiting and needs to go on break
 			if(tellers[i].take_break == 1){
+
 				tellers[i].status = 2;
 				switch (i){
 				case 1:
 					//Do with initialized Breaker in Breakers.C
+					breaker.start_break[i] = 1;
+					tellers[i].break_end = breaker.break_duration1;
 					break;
 				case 2:
 					//Do with initialized Breaker in Breakers.C
+					breaker.start_break[i] = 1;
+					tellers[i].break_end = breaker.break_duration2;
 					break;
 				case 3:
 					//Do with initialized Breaker in Breakers.C
+					breaker.start_break[i] = 1;
+					tellers[i].break_end = breaker.break_duration3;
 					break;
 				default:
 					break;

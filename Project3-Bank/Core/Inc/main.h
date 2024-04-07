@@ -73,7 +73,7 @@ void Error_Handler(void);
 #define SWO_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-
+extern RNG_HandleTypeDef hrng;
 
 typedef struct {
     int hour;
@@ -120,13 +120,16 @@ typedef struct {
 typedef struct {
 	//The breaker should
 	//First teller
-	WallClock start_break1;
+	int start_break[3];
+	WallClock break_time1;
 	WallClock break_duration1;
 	//First teller
-	WallClock start_break2;
+
+	WallClock break_time2;
 	WallClock break_duration2;
 	//First teller
-	WallClock start_break3;
+
+	WallClock break_time3;
 	WallClock break_duration3;
 
 } Breaker;

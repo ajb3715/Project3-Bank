@@ -8,9 +8,8 @@
 #ifndef INC_TELLER_H_
 #define INC_TELLER_H_
 
+extern Teller tellers[4];
 
-void led_init(void);
-void led_set(_Bool on_off );
-_Bool led_isOn(void );
-
+void initialize_tellers(void);
+void manage_tellers(void);
 #endif /* INC_TELLER_H_ */

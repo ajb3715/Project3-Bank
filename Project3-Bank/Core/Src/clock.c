@@ -32,10 +32,10 @@ void clock_increment(WallClock Clock){
 	//Check if second is full, if so then increment
 	//minute count and reset second count to 0
 	//if minute count full increment hour count and reset minutes to 0
-	if(Clock.second == 59){
-		Clock.second = 0;
-		if(Clock.minute == 59){
-			Clock.minute = 0;
+	if(Clock.second >= 59){
+		Clock.second -= 60;
+		if(Clock.minute >= 59){
+			Clock.minute -= 60;
 			Clock.hour += 1;
 		}
 		else{
@@ -97,6 +97,7 @@ int clock_compare(WallClock Clock1, WallClock Clock2){
 	else if(Clock1.hour < Clock2.hour){
 		return 2;
 	}
+	return 0;
 }
 
 
