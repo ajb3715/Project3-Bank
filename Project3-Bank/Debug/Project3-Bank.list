@@ -41,7 +41,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  18 .debug_line   00019c2b  00000000  00000000  00042eca  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000fca8e  00000000  00000000  0005caf5  2**0
+ 19 .debug_str    000fca8d  00000000  00000000  0005caf5  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  20 .debug_frame  000061d4  00000000  00000000  00159584  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
@@ -17925,7 +17925,7 @@ __attribute__(( weak )) void vPortSetupTimerInterrupt( void )
  8006360:	e000e010 	.word	0xe000e010
  8006364:	e000e018 	.word	0xe000e018
  8006368:	20000000 	.word	0x20000000
- 800636c:	10624dd3 	.word	0x10624dd3
+ 800636c:	1b4e81b5 	.word	0x1b4e81b5
  8006370:	e000e014 	.word	0xe000e014
 
 08006374 <vPortEnableVFP>:
