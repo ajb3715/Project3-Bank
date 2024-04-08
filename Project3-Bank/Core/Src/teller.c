@@ -12,8 +12,10 @@
 #include "stddef.h"
 
 Teller tellers[4];
+
+Teller VOID_TELLER;
 //fix this
-//Teller teller_wait[4] = {0, 0, 0, 0};
+Teller teller_wait[4];
 
 void initialize_tellers(void) {
     for (int i = 1; i < 4; i++) {
@@ -41,7 +43,11 @@ void initialize_tellers(void) {
         clock_init(tellers[i].min_break);
         clock_init(tellers[i].total_break);
 
+        //initialize tellers in Queue
+        teller_wait[i-1] = tellers[i];
+
     }
+    	teller_wait[3] = VOID_TELLER;
 }
 
 //Maybe Put entire thing inside a case statement if at all possible,
@@ -69,17 +75,19 @@ void manage_tellers(void){
 				add_clocks(tellers[i].total_break, tellers[i].current_break);
 				clock_init(tellers[i].current_break);
 				tellers[i].status = 0;
-//				//HAVE TELLER ENTER THE QUEUE IF NOT ALREADY IN IT
-//				if(teller_wait[0] == null){
-//					teller_wait[0] = tellers[i];
-//				}
-//				else if(teller_wait[1] == null){
-//					teller_wait[1] = tellers[i];
-//				}
-//				else if(teller_wait[2] == null){
-//					teller_wait[2] = tellers[i];
-//				}
-				break;
+				//HAVE TELLER ENTER THE QUEUE IF NOT ALREADY IN IT
+				if(!((teller_wait[0].id == i) && (teller_wait[1].id == i) && (teller_wait[2].id == i))){
+					if(teller_wait[0].id == 0){
+						teller_wait[0] = tellers[i];
+					}
+					else if(teller_wait[1].id == 0){
+						teller_wait[1] = tellers[i];
+					}
+					else if(teller_wait[2].id == 0){
+						teller_wait[2] = tellers[i];
+					}
+					break;
+				}
 			}
 			//Case Break
 			break;
@@ -89,23 +97,24 @@ void manage_tellers(void){
 			if(tellers[i].take_break == 0){
 				clock_increment(tellers[i].current_time_waiting);
 				//Check to see if they can grab a customer
-				/*
-				 * Check to see if the queue is not empty, and this teller is at the front of the queue
-				 *
-				 * if((customer_queue != empty) && ((tellers[i].ID == teller_wait[0].ID){
-				 * Customer = popfromqueue(customer);
-				 * 	tellers[i].service_end_time = Customer service time;
-				 * 	update any neeeded metric stuff for the customer shit
-				 * 	tellers[i].status = 1;
-				 * 	if(clock_compare(tellers[i].current_time_waiting,tellers[i].max_time_waiting) == 0){
-				 *	tellers[i].max_time_waiting = tellers[i].current_time_waiting;
-				 *	teller_wait[0] = teller_wait[1];
-				 *	teller_wait[1] = teller_wait[2];
-				 *	teller_wait[3] = teller_wait[3];
-				 *	teller_wait[4] = NULL;
-				 *	}
-				 *  clock_init(tellers[i].current_time_waiting;
-				 */
+
+				//Check to see if the queue is not empty, and this teller is at the front of the queue
+
+//				  if((customer_queue != empty) && (tellers[i].id == teller_wait[0].id)){
+//					Customer = popfromqueue(customer);
+//				  	//TODO
+//				  	//tellers[i].service_end_time = Customer service time;
+//				  	update any needed metric stuff for the customer shit TODO
+//				  	tellers[i].status = 1;
+//				  	if(clock_compare(tellers[i].current_time_waiting,tellers[i].max_time_waiting) == 0){
+//				 	tellers[i].max_time_waiting = tellers[i].current_time_waiting;
+//				 	teller_wait[0] = teller_wait[1];
+//				 	teller_wait[1] = teller_wait[2];
+//				 	teller_wait[3] = teller_wait[3];
+//				 	teller_wait[4] = VOID_TELLER;
+//				 	}
+//				   clock_init(tellers[i].current_time_waiting);
+
 				break;
 			}
 			//If teller is waiting and needs to go on break
@@ -155,15 +164,19 @@ void manage_tellers(void){
 				add_clocks(tellers[i].total_time_working,tellers[i].current_time_working);
 				clock_init(tellers[i].current_time_working);
 				tellers[i].status = 0;
-//				if(teller_wait[0] == NULL){
-//					teller_wait[0] = tellers[i];
-//				}
-//				else if(teller_wait[1] == NULL){
-//					teller_wait[1] = tellers[i];
-//				}
-//				else if(teller_wait[2] == NULL){
-//					teller_wait[2] = tellers[i];
-//				}
+				//Have Teller RE-Enter Queue
+				if(!((teller_wait[0].id == i) && (teller_wait[1].id == i) && (teller_wait[2].id == i))){
+					if(teller_wait[0].id == 0){
+						teller_wait[0] = tellers[i];
+					}
+					else if(teller_wait[1].id == 0){
+						teller_wait[1] = tellers[i];
+					}
+					else if(teller_wait[2].id == 0){
+						teller_wait[2] = tellers[i];
+					}
+					break;
+				}
 				break;
 			}
 		}
@@ -172,8 +185,6 @@ void manage_tellers(void){
 	}
 }
 
-//Grab Customers from customer queue function. Sets end_service time.
-//If Teller is waiting,
-//pop them out and have them not get back into queue until they are done
+
 
 
