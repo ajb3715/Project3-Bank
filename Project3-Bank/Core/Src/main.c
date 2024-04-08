@@ -22,6 +22,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "clock.h"
+#include "customer.h"
+#include "teller.h"
+#include "breaker.h"
 
 /* USER CODE END Includes */
 
@@ -42,8 +46,6 @@
 
 /* Private variables ---------------------------------------------------------*/
 RNG_HandleTypeDef hrng;
-
-TIM_HandleTypeDef htim6;
 
 UART_HandleTypeDef huart2;
 
@@ -75,6 +77,13 @@ const osThreadAttr_t Manager_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for Breaker */
+osThreadId_t BreakerHandle;
+const osThreadAttr_t Breaker_attributes = {
+  .name = "Breaker",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* Definitions for MUTEX */
 osMutexId_t MUTEXHandle;
 const osMutexAttr_t MUTEX_attributes = {
@@ -89,12 +98,12 @@ const osMutexAttr_t MUTEX_attributes = {
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
-static void MX_TIM6_Init(void);
 static void MX_RNG_Init(void);
 void StartTellers(void *argument);
 void StartCustomers(void *argument);
 void StartClock(void *argument);
 void StartManager(void *argument);
+void StartBreaker(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -135,7 +144,6 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
-  MX_TIM6_Init();
   MX_RNG_Init();
   /* USER CODE BEGIN 2 */
 
@@ -176,6 +184,9 @@ int main(void)
 
   /* creation of Manager */
   ManagerHandle = osThreadNew(StartManager, NULL, &Manager_attributes);
+
+  /* creation of Breaker */
+  BreakerHandle = osThreadNew(StartBreaker, NULL, &Breaker_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -276,44 +287,6 @@ static void MX_RNG_Init(void)
 }
 
 /**
-  * @brief TIM6 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_TIM6_Init(void)
-{
-
-  /* USER CODE BEGIN TIM6_Init 0 */
-
-  /* USER CODE END TIM6_Init 0 */
-
-  TIM_MasterConfigTypeDef sMasterConfig = {0};
-
-  /* USER CODE BEGIN TIM6_Init 1 */
-
-  /* USER CODE END TIM6_Init 1 */
-  htim6.Instance = TIM6;
-  htim6.Init.Prescaler = 600;
-  htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim6.Init.Period = 222;
-  htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
-  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN TIM6_Init 2 */
-
-  /* USER CODE END TIM6_Init 2 */
-
-}
-
-/**
   * @brief USART2 Initialization Function
   * @param None
   * @retval None
@@ -374,12 +347,36 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
+  /*Configure GPIO pins : PC0 PC1 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
+  GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PA0 Switch1_Pin Switch2_Pin PA10 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|Switch1_Pin|Switch2_Pin|GPIO_PIN_10;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
   /*Configure GPIO pin : LD2_Pin */
   GPIO_InitStruct.Pin = LD2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : Switch3_Pin PB10 PB4 */
+  GPIO_InitStruct.Pin = Switch3_Pin|GPIO_PIN_10|GPIO_PIN_4;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PC7 */
+  GPIO_InitStruct.Pin = GPIO_PIN_7;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
@@ -401,9 +398,12 @@ void StartTellers(void *argument)
   /* USER CODE BEGIN 5 */
 	//Initialize 3 tellers
   /* Infinite loop */
+	initialize_tellers();
   for(;;)
   {
-    osDelay(1);
+    osMutexAcquire(MUTEXHandle, osWaitForever);
+    manage_tellers();
+    osMutexRelease(MUTEXHandle);
   }
   /* USER CODE END 5 */
 }
@@ -437,9 +437,12 @@ void StartClock(void *argument)
 {
   /* USER CODE BEGIN StartClock */
   /* Infinite loop */
+	day_init(Clock);
   for(;;)
   {
-    osDelay(1);
+	osMutexAcquire(MUTEXHandle, osWaitForever);
+    clock_increment(Clock);
+    osMutexRelease(MUTEXHandle);
   }
   /* USER CODE END StartClock */
 }
@@ -460,6 +463,27 @@ void StartManager(void *argument)
     osDelay(1);
   }
   /* USER CODE END StartManager */
+}
+
+/* USER CODE BEGIN Header_StartBreaker */
+/**
+* @brief Function implementing the Breaker thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartBreaker */
+void StartBreaker(void *argument)
+{
+  /* USER CODE BEGIN StartBreaker */
+  /* Infinite loop */
+	init_breaker();
+  for(;;)
+  {
+	    osMutexAcquire(MUTEXHandle, osWaitForever);
+	    run_breaker();
+	    osMutexRelease(MUTEXHandle);
+  }
+  /* USER CODE END StartBreaker */
 }
 
 /**

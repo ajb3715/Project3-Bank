@@ -102,12 +102,15 @@ void manage_tellers(void){
 				//Check to see if the queue is not empty, and this teller is at the front of the queue
 
 				  if((waiting[0] != NULL) && (tellers[i].id == teller_wait[0].id)){
-					Customer customer = waiting[0];
+					Customer customer = *waiting[0];
 					waiting[0] = NULL;
 //				  	//TODO
-				  	tellers[i].service_end_time = customer.service_time
+				  	tellers[i].service_end_time = customer.service_time;
 //				  	update any needed metric stuff for the customer shit TODO
 				  	add_clocks(total_customer_wait, customer.total_queue_time);
+				  	if(clock_compare(customer.total_queue_time,max_customer_wait) == 0){
+				  		max_customer_wait = customer.total_queue_time;
+				  	}
 				  	tellers[i].status = 1;
 				  	if(clock_compare(tellers[i].current_time_waiting,tellers[i].max_time_waiting) == 0){
 				 	tellers[i].max_time_waiting = tellers[i].current_time_waiting;
@@ -117,6 +120,7 @@ void manage_tellers(void){
 				 	teller_wait[4] = VOID_TELLER;
 				 	}
 				   clock_init(tellers[i].current_time_waiting);
+				  }
 
 				break;
 			}

@@ -17,12 +17,14 @@ uint32_t* random_service_time;
 uint32_t* random_new_customer;
 Customer* c;
 WallClock total_customer_wait;
+WallClock max_customer_wait;
 int total_customers;
 
 void init_customer(){
 	total_customers = 0;
 	clock_init(total_customer_wait);
 	max_customer_waiting = 0;
+	clock_init(max_customer_wait);
 	waiting_customers = 0;
 	HAL_RNG_GenerateRandomNumber(&hrng, random_new_customer);
 	new_customer_time->hour = 0;

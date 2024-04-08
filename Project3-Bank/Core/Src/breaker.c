@@ -53,6 +53,15 @@ void init_breaker(void){
 }
 
 void run_breaker(){
+	if((!HAL_GPIO_ReadPin(Switch1_GPIO_Port, Switch1_Pin)) == 1 ){
+			  tellers[1].take_break = 1;
+	}
+	if((!HAL_GPIO_ReadPin(Switch2_GPIO_Port, Switch2_Pin)) == 1 ){
+			  tellers[2].take_break = 2;
+	}
+	if((!HAL_GPIO_ReadPin(Switch3_GPIO_Port, Switch2_Pin)) == 1 ){
+			  tellers[3].take_break = 3;
+	}
 	if(clock_compare(Clock, breaker.break_time1) == 1){
 		tellers[1].take_break = 1;
 	}

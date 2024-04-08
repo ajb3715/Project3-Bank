@@ -11,6 +11,7 @@
 extern int waiting_customers;
 extern Customer* waiting[100];
 extern WallClock total_customer_wait;
+extern WallClock max_customer_wait;
 extern int total_customers;
 
 void init_customer();
