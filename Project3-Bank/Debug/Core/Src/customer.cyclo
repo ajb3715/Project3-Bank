@@ -1,2 +1,2 @@
-../Core/Src/customer.c:16:6:init_customer	1
-../Core/Src/customer.c:22:6:run_customer	4
+../Core/Src/customer.c:20:6:init_customer	1
+../Core/Src/customer.c:31:6:run_customer	5

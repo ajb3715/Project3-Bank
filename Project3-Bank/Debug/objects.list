@@ -1,3 +1,4 @@
+"./Core/Src/Manager.o"
 "./Core/Src/breaker.o"
 "./Core/Src/clock.o"
 "./Core/Src/customer.o"
