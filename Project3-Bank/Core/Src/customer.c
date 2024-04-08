@@ -16,8 +16,12 @@ WallClock *new_customer_time;
 uint32_t* random_service_time;
 uint32_t* random_new_customer;
 Customer* c;
+WallClock total_customer_wait;
+int total_customers;
 
 void init_customer(){
+	total_customers = 0;
+	clock_init(total_customer_wait);
 	max_customer_waiting = 0;
 	waiting_customers = 0;
 	HAL_RNG_GenerateRandomNumber(&hrng, random_new_customer);
@@ -49,6 +53,7 @@ void run_customer(){
 		new_customer_time->minute = (30 + (*random_new_customer - 30) % 31);
 		new_customer_time->second = (*random_new_customer % 60);
 		add_clocks(*new_customer_time, Clock);
+		total_customers += 1;
 	}
 
 	// update max customers waiting

@@ -10,6 +10,7 @@
 #include "main.h"
 #include "breaker.h"
 #include "stddef.h"
+#include "customer.h"
 
 Teller tellers[4];
 
@@ -100,20 +101,22 @@ void manage_tellers(void){
 
 				//Check to see if the queue is not empty, and this teller is at the front of the queue
 
-//				  if((customer_queue != empty) && (tellers[i].id == teller_wait[0].id)){
-//					Customer = popfromqueue(customer);
+				  if((waiting[0] != NULL) && (tellers[i].id == teller_wait[0].id)){
+					Customer customer = waiting[0];
+					waiting[0] = NULL;
 //				  	//TODO
-//				  	//tellers[i].service_end_time = Customer service time;
+				  	tellers[i].service_end_time = customer.service_time
 //				  	update any needed metric stuff for the customer shit TODO
-//				  	tellers[i].status = 1;
-//				  	if(clock_compare(tellers[i].current_time_waiting,tellers[i].max_time_waiting) == 0){
-//				 	tellers[i].max_time_waiting = tellers[i].current_time_waiting;
-//				 	teller_wait[0] = teller_wait[1];
-//				 	teller_wait[1] = teller_wait[2];
-//				 	teller_wait[3] = teller_wait[3];
-//				 	teller_wait[4] = VOID_TELLER;
-//				 	}
-//				   clock_init(tellers[i].current_time_waiting);
+				  	add_clocks(total_customer_wait, customer.total_queue_time);
+				  	tellers[i].status = 1;
+				  	if(clock_compare(tellers[i].current_time_waiting,tellers[i].max_time_waiting) == 0){
+				 	tellers[i].max_time_waiting = tellers[i].current_time_waiting;
+				 	teller_wait[0] = teller_wait[1];
+				 	teller_wait[1] = teller_wait[2];
+				 	teller_wait[3] = teller_wait[3];
+				 	teller_wait[4] = VOID_TELLER;
+				 	}
+				   clock_init(tellers[i].current_time_waiting);
 
 				break;
 			}
