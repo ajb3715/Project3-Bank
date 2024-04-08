@@ -11,43 +11,48 @@
 
 //The main clock to be checked by the program
 //Declare extern within the header file
-WallClock Clock = { .hour = 0, .minute = 0, .second = 0};
+WallClock Clock;
 
 
-void clock_init(void) {
+WallClock clock_init(WallClock the_clock) {
 	//Initialize the main clock
-	Clock.hour = 0;
-	Clock.minute = 0;
-	Clock.second = 0;
+	the_clock.hour = 0;
+	the_clock.minute = 0;
+	the_clock.second = 0;
+
+	return the_clock;
 }
 
-void day_init(WallClock Clock) {
+WallClock day_init(WallClock the_clock) {
 	//Initialize the main clock
-	Clock.hour = 9;
-	Clock.minute = 0;
-	Clock.second = 0;
+	the_clock.hour = 9;
+	the_clock.minute = 0;
+	the_clock.second = 0;
+
+	return the_clock;
 }
 
-void clock_increment(WallClock Clock){
+WallClock clock_increment(WallClock the_clock){
 	//Check if second is full, if so then increment
 	//minute count and reset second count to 0
 	//if minute count full increment hour count and reset minutes to 0
-	if(Clock.second >= 59){
-		Clock.second -= 60;
-		if(Clock.minute >= 59){
-			Clock.minute -= 60;
-			Clock.hour += 1;
+	if(the_clock.second >= 59){
+		the_clock.second -= 59;
+		if(the_clock.minute >= 59){
+			the_clock.minute -= 59;
+			the_clock.hour += 1;
 		}
 		else{
-			Clock.minute += 1;
+			the_clock.minute += 1;
 		}
 	}
 	else{
-		Clock.second += 1;
+		the_clock.second += 1;
 	}
+	return the_clock;
 }
 
-void add_clocks(WallClock Clock1, WallClock Clock2){
+WallClock add_clocks(WallClock Clock1, WallClock Clock2){
 	//Adds seconds then minutes then hours, accounting for overflows as needed
 	//Add seconds and account overflow
 	Clock1.second += Clock2.second;
@@ -67,6 +72,8 @@ void add_clocks(WallClock Clock1, WallClock Clock2){
 	}
 	//Add hours, don't account overflow as impossible
 	Clock1.hour += Clock2.hour;
+
+	return Clock1;
 }
 
 //if clock 1 is greater than clock 2(later) then return 0

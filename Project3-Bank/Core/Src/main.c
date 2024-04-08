@@ -47,42 +47,44 @@
 /* Private variables ---------------------------------------------------------*/
 RNG_HandleTypeDef hrng;
 
+TIM_HandleTypeDef htim6;
+
 UART_HandleTypeDef huart2;
 
 /* Definitions for Tellers */
 osThreadId_t TellersHandle;
 const osThreadAttr_t Tellers_attributes = {
   .name = "Tellers",
-  .stack_size = 128 * 4,
+  .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for Customers */
 osThreadId_t CustomersHandle;
 const osThreadAttr_t Customers_attributes = {
   .name = "Customers",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for Clock */
 osThreadId_t ClockHandle;
 const osThreadAttr_t Clock_attributes = {
   .name = "Clock",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for Manager */
 osThreadId_t ManagerHandle;
 const osThreadAttr_t Manager_attributes = {
   .name = "Manager",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for Breaker */
 osThreadId_t BreakerHandle;
 const osThreadAttr_t Breaker_attributes = {
   .name = "Breaker",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for MUTEX */
 osMutexId_t MUTEXHandle;
@@ -99,6 +101,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_RNG_Init(void);
+static void MX_TIM6_Init(void);
 void StartTellers(void *argument);
 void StartCustomers(void *argument);
 void StartClock(void *argument);
@@ -106,7 +109,8 @@ void StartManager(void *argument);
 void StartBreaker(void *argument);
 
 /* USER CODE BEGIN PFP */
-
+int update_flag = 0;
+int threads_ran = 0;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -145,8 +149,9 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   MX_RNG_Init();
+  MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_TIM_Base_Start_IT(&htim6);
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -287,6 +292,44 @@ static void MX_RNG_Init(void)
 }
 
 /**
+  * @brief TIM6 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM6_Init(void)
+{
+
+  /* USER CODE BEGIN TIM6_Init 0 */
+
+  /* USER CODE END TIM6_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM6_Init 1 */
+
+  /* USER CODE END TIM6_Init 1 */
+  htim6.Instance = TIM6;
+  htim6.Init.Prescaler = 666;
+  htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim6.Init.Period = 222;
+  htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM6_Init 2 */
+
+  /* USER CODE END TIM6_Init 2 */
+
+}
+
+/**
   * @brief USART2 Initialization Function
   * @param None
   * @retval None
@@ -384,6 +427,10 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+	update_flag = 1;
+}
+
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_StartTellers */
@@ -401,9 +448,15 @@ void StartTellers(void *argument)
 	initialize_tellers();
   for(;;)
   {
+	if(update_flag == 1){
     osMutexAcquire(MUTEXHandle, osWaitForever);
     manage_tellers();
     osMutexRelease(MUTEXHandle);
+    threads_ran += 1;
+	}
+//	if(threads_ran == 4){
+//		update_flag = 0;
+//	}
   }
   /* USER CODE END 5 */
 }
@@ -419,9 +472,18 @@ void StartCustomers(void *argument)
 {
   /* USER CODE BEGIN StartCustomers */
   /* Infinite loop */
+  init_customer();
   for(;;)
   {
-    osDelay(1);
+    if(update_flag == 1){
+	osMutexAcquire(MUTEXHandle, osWaitForever);
+	run_customer();
+	osMutexRelease(MUTEXHandle);
+	threads_ran += 1;
+	}
+//	if(threads_ran == 4){
+//		update_flag = 0;
+//	}
   }
   /* USER CODE END StartCustomers */
 }
@@ -437,12 +499,19 @@ void StartClock(void *argument)
 {
   /* USER CODE BEGIN StartClock */
   /* Infinite loop */
-	day_init(Clock);
+	Clock = day_init(Clock);
   for(;;)
   {
+	if(update_flag == 1){
 	osMutexAcquire(MUTEXHandle, osWaitForever);
-    clock_increment(Clock);
+    Clock = clock_increment(Clock);
     osMutexRelease(MUTEXHandle);
+    threads_ran += 1;
+	}
+//	if(threads_ran == 4){
+		update_flag = 0;
+//	}
+
   }
   /* USER CODE END StartClock */
 }
@@ -479,9 +548,16 @@ void StartBreaker(void *argument)
 	init_breaker();
   for(;;)
   {
+	    if(update_flag == 1){
 	    osMutexAcquire(MUTEXHandle, osWaitForever);
 	    run_breaker();
 	    osMutexRelease(MUTEXHandle);
+	    threads_ran += 1;
+		}
+//		if(threads_ran == 4){
+//			update_flag = 0;
+//		}
+
   }
   /* USER CODE END StartBreaker */
 }

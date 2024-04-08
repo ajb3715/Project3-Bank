@@ -11,6 +11,9 @@
 #include "breaker.h"
 #include "stddef.h"
 #include "customer.h"
+#include "string.h"
+#include "stdlib.h"
+#include "stdio.h"
 
 Teller tellers[4];
 
@@ -26,23 +29,23 @@ void initialize_tellers(void) {
         tellers[i].status = 0;
         tellers[i].take_break = 0;
         //service function
-        clock_init(tellers[i].service_end_time);
+        tellers[i].service_end_time = clock_init(tellers[i].service_end_time);
         //Initialize metrics
         tellers[i].customers_served = 0;
-        clock_init(tellers[i].total_time_working);
-        clock_init(tellers[i].total_time_waiting);
-        clock_init(tellers[i].current_time_working);
-        clock_init(tellers[i].current_time_waiting);
-        clock_init(tellers[i].max_time_working);
-        clock_init(tellers[i].max_time_waiting);
+        tellers[i].total_time_working = clock_init(tellers[i].total_time_working);
+        tellers[i].total_time_waiting = clock_init(tellers[i].total_time_waiting);
+        tellers[i].current_time_working = clock_init(tellers[i].current_time_working);
+        tellers[i].current_time_waiting = clock_init(tellers[i].current_time_waiting);
+        tellers[i].max_time_working = clock_init(tellers[i].max_time_working);
+        tellers[i].max_time_working = clock_init(tellers[i].max_time_working);
         //Initialize break taking
-        clock_init(tellers[i].break_end);
-        clock_init(tellers[i].current_break);
+        tellers[i].break_end = clock_init(tellers[i].break_end);
+        tellers[i].current_break = clock_init(tellers[i].current_break);
         //Initialize break metrics
         tellers[i].num_breaks = 0;
-        clock_init(tellers[i].max_break);
-        clock_init(tellers[i].min_break);
-        clock_init(tellers[i].total_break);
+        tellers[i].max_break = clock_init(tellers[i].max_break);
+        tellers[i].min_break = clock_init(tellers[i].min_break);
+        tellers[i].total_break = clock_init(tellers[i].total_break);
 
         //initialize tellers in Queue
         teller_wait[i-1] = tellers[i];
@@ -62,7 +65,7 @@ void manage_tellers(void){
 			//If teller is on break and it isn't over
 			if(clock_compare(tellers[i].current_break,tellers[i].break_end) != 1){
 				//go onto next teller
-				clock_increment(tellers[i].current_break);
+				tellers[i].current_break = clock_increment(tellers[i].current_break);
 				break;
 			}
 			//If teller is on break and it is over
@@ -73,8 +76,8 @@ void manage_tellers(void){
 				if(clock_compare(tellers[i].current_break,tellers[i].min_break) == 2){
 					tellers[i].min_break = tellers[i].current_break;
 				}
-				add_clocks(tellers[i].total_break, tellers[i].current_break);
-				clock_init(tellers[i].current_break);
+				tellers[i].total_break = add_clocks(tellers[i].total_break, tellers[i].current_break);
+				tellers[i].current_break = clock_init(tellers[i].current_break);
 				tellers[i].status = 0;
 				//HAVE TELLER ENTER THE QUEUE IF NOT ALREADY IN IT
 				if(!((teller_wait[0].id == i) && (teller_wait[1].id == i) && (teller_wait[2].id == i))){
@@ -96,7 +99,7 @@ void manage_tellers(void){
 		case 0:
 			//If teller is waiting and doesn't need to go on break;
 			if(tellers[i].take_break == 0){
-				clock_increment(tellers[i].current_time_waiting);
+				tellers[i].current_time_waiting = clock_increment(tellers[i].current_time_waiting);
 				//Check to see if they can grab a customer
 
 				//Check to see if the queue is not empty, and this teller is at the front of the queue
@@ -107,7 +110,7 @@ void manage_tellers(void){
 //				  	//TODO
 				  	tellers[i].service_end_time = customer.service_time;
 //				  	update any needed metric stuff for the customer shit TODO
-				  	add_clocks(total_customer_wait, customer.total_queue_time);
+				  	total_customer_wait = add_clocks(total_customer_wait, customer.total_queue_time);
 				  	if(clock_compare(customer.total_queue_time,max_customer_wait) == 0){
 				  		max_customer_wait = customer.total_queue_time;
 				  	}
@@ -119,7 +122,7 @@ void manage_tellers(void){
 				 	teller_wait[3] = teller_wait[3];
 				 	teller_wait[4] = VOID_TELLER;
 				 	}
-				   clock_init(tellers[i].current_time_waiting);
+				  	tellers[i].current_time_waiting = clock_init(tellers[i].current_time_waiting);
 				  }
 
 				break;
@@ -151,8 +154,8 @@ void manage_tellers(void){
 				if(clock_compare(tellers[i].current_time_waiting,tellers[i].max_time_waiting) == 0){
 					tellers[i].max_time_waiting = tellers[i].current_time_waiting;
 				}
-				add_clocks(tellers[i].total_time_waiting,tellers[i].current_time_waiting);
-				clock_init(tellers[i].current_time_waiting);
+				tellers[i].total_time_waiting = add_clocks(tellers[i].total_time_waiting,tellers[i].current_time_waiting);
+				tellers[i].current_time_waiting = clock_init(tellers[i].current_time_waiting);
 			}
 			//Case Break
 			break;
@@ -160,7 +163,7 @@ void manage_tellers(void){
 		case 1:
 			//If teller is servicing and not finished
 			if(clock_compare(tellers[i].current_time_working,tellers[i].service_end_time) == 1){
-				clock_increment(tellers[i].current_time_working);
+				tellers[i].current_time_working = clock_increment(tellers[i].current_time_working);
 				break;
 			}
 			//If teller is servicing and finished
@@ -168,8 +171,8 @@ void manage_tellers(void){
 				if(clock_compare(tellers[i].current_time_working,tellers[i].max_time_working) == 0){
 					tellers[i].max_time_working = tellers[i].current_time_working;
 				}
-				add_clocks(tellers[i].total_time_working,tellers[i].current_time_working);
-				clock_init(tellers[i].current_time_working);
+				tellers[i].total_time_working = add_clocks(tellers[i].total_time_working,tellers[i].current_time_working);
+				tellers[i].current_time_working = clock_init(tellers[i].current_time_working);
 				tellers[i].status = 0;
 				//Have Teller RE-Enter Queue
 				if(!((teller_wait[0].id == i) && (teller_wait[1].id == i) && (teller_wait[2].id == i))){
@@ -189,6 +192,15 @@ void manage_tellers(void){
 		}
 			//Case Break
 			break;
+	}
+	char buffer[256];
+	if((Clock.minute  % 30) == 0 && (Clock.second % 60) == 30){
+		sprintf(buffer, "Current time: %d:%d:%d \r\n", Clock.hour, Clock.minute, Clock.second);
+		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
+		sprintf(buffer,"Customers waiting in Queue: %d \r\n", waiting_customers );
+		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
+		sprintf(buffer,"Teller 1: %d Teller 2: %d Teller 3: %d \r\n", tellers[1].status,tellers[2].status,tellers[3].status);
+		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
 	}
 }
 

@@ -24,8 +24,8 @@ void init_breaker(void){
 	//Duration of the assigned break;
 	HAL_RNG_GenerateRandomNumber(&hrng,random1);
 	WallClock temp_clock1 = { .hour = 0, .minute = (30 + (*random1 - 30) % 31), .second = (*random1 % 60)};
-	add_clocks(breaker.break_time1,Clock);
-	add_clocks(breaker.break_time1,temp_clock1);
+	breaker.break_time1 = add_clocks(breaker.break_time1,Clock);
+	breaker.break_time1 = add_clocks(breaker.break_time1,temp_clock1);
 	breaker.break_duration1.hour = 0;
 	breaker.break_duration1.minute = (*random1 % 5);
 	breaker.break_duration1.second = (*random1 % 60);
@@ -35,8 +35,8 @@ void init_breaker(void){
 	//Duration of the assigned break;
 	HAL_RNG_GenerateRandomNumber(&hrng,random2);
 	WallClock temp_clock2 = { .hour = 0, .minute = (30 + (*random2 - 30) % 31), .second = (*random2 % 60)};
-	add_clocks(breaker.break_time2,Clock);
-	add_clocks(breaker.break_time2,temp_clock2);
+	breaker.break_time2 = add_clocks(breaker.break_time2,Clock);
+	breaker.break_time2 = add_clocks(breaker.break_time2,temp_clock2);
 	breaker.break_duration2.hour = 0;
 	breaker.break_duration2.minute = (*random2 % 5);
 	breaker.break_duration2.second = (*random2 % 60);
@@ -45,8 +45,8 @@ void init_breaker(void){
 	//Duration of the assigned break;
 	HAL_RNG_GenerateRandomNumber(&hrng,random3);
 	WallClock temp_clock3 = { .hour = 0, .minute = (30 + (*random3 - 30) % 31), .second = (*random3 % 60)};
-	add_clocks(breaker.break_time3,Clock);
-	add_clocks(breaker.break_time3,temp_clock3);
+	breaker.break_time3 = add_clocks(breaker.break_time3,Clock);
+	breaker.break_time3 = add_clocks(breaker.break_time3,temp_clock3);
 	breaker.break_duration3.hour = 0;
 	breaker.break_duration3.minute = (*random3 % 5);
 	breaker.break_duration3.second = (*random3 % 60);
@@ -75,8 +75,8 @@ void run_breaker(){
 		breaker.start_break[1] = 0;
 		HAL_RNG_GenerateRandomNumber(&hrng,random1);
 		WallClock temp_clock1 = { .hour = 0, .minute = (30 + (*random1 - 30) % 31), .second = (*random1 % 60)};
-		add_clocks(breaker.break_time1,Clock);
-		add_clocks(breaker.break_time1,temp_clock1);
+		breaker.break_time1 = add_clocks(breaker.break_time1,Clock);
+		breaker.break_time1 = add_clocks(breaker.break_time1,temp_clock1);
 		breaker.break_duration1.hour = 0;
 		breaker.break_duration1.minute = (*random1 % 5);
 		breaker.break_duration1.second = (*random1 % 60);
@@ -85,8 +85,8 @@ void run_breaker(){
 		breaker.start_break[2] = 0;
 		HAL_RNG_GenerateRandomNumber(&hrng,random2);
 		WallClock temp_clock2 = { .hour = 0, .minute = (30 + (*random2 - 30) % 31), .second = (*random2 % 60)};
-		add_clocks(breaker.break_time2,Clock);
-		add_clocks(breaker.break_time2,temp_clock2);
+		breaker.break_time2 = add_clocks(breaker.break_time2,Clock);
+		breaker.break_time2 = add_clocks(breaker.break_time2,temp_clock2);
 		breaker.break_duration2.hour = 0;
 		breaker.break_duration2.minute = (*random2 % 5);
 		breaker.break_duration2.second = (*random2 % 60);
@@ -95,8 +95,8 @@ void run_breaker(){
 		breaker.start_break[3] = 0;
 		HAL_RNG_GenerateRandomNumber(&hrng,random3);
 		WallClock temp_clock2 = { .hour = 0, .minute = (30 + (*random3 - 30) % 31), .second = (*random3 % 60)};
-		add_clocks(breaker.break_time3,Clock);
-		add_clocks(breaker.break_time3,temp_clock2);
+		breaker.break_time3 = add_clocks(breaker.break_time3,Clock);
+		breaker.break_time3 = add_clocks(breaker.break_time3,temp_clock2);
 		breaker.break_duration3.hour = 0;
 		breaker.break_duration3.minute = (*random2 % 5);
 		breaker.break_duration3.second = (*random2 % 60);

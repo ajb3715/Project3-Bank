@@ -80,6 +80,8 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 extern RNG_HandleTypeDef hrng;
+extern UART_HandleTypeDef huart2;
+extern int update_flag;
 
 typedef struct {
     int hour;
