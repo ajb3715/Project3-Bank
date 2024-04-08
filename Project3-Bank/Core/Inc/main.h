@@ -134,6 +134,20 @@ typedef struct {
 
 } Breaker;
 
+typedef struct {
+	// ID which also acts as a check for customer count
+	int id;
+
+	// Information for tellers (
+	WallClock service_time;
+
+	//Metric Tracking
+	WallClock entered_queue_time;
+	WallClock left_queue_time;
+	WallClock total_queue_time;
+
+} Customer;
+
 
 /* USER CODE END Private defines */
 
