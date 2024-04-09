@@ -5,12 +5,12 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Core/Src/Manager.c \
 ../Core/Src/breaker.c \
 ../Core/Src/clock.c \
 ../Core/Src/customer.c \
 ../Core/Src/freertos.c \
 ../Core/Src/main.c \
+../Core/Src/manager.c \
 ../Core/Src/stm32l4xx_hal_msp.c \
 ../Core/Src/stm32l4xx_it.c \
 ../Core/Src/syscalls.c \
@@ -19,12 +19,12 @@ C_SRCS += \
 ../Core/Src/teller.c 
 
 OBJS += \
-./Core/Src/Manager.o \
 ./Core/Src/breaker.o \
 ./Core/Src/clock.o \
 ./Core/Src/customer.o \
 ./Core/Src/freertos.o \
 ./Core/Src/main.o \
+./Core/Src/manager.o \
 ./Core/Src/stm32l4xx_hal_msp.o \
 ./Core/Src/stm32l4xx_it.o \
 ./Core/Src/syscalls.o \
@@ -33,12 +33,12 @@ OBJS += \
 ./Core/Src/teller.o 
 
 C_DEPS += \
-./Core/Src/Manager.d \
 ./Core/Src/breaker.d \
 ./Core/Src/clock.d \
 ./Core/Src/customer.d \
 ./Core/Src/freertos.d \
 ./Core/Src/main.d \
+./Core/Src/manager.d \
 ./Core/Src/stm32l4xx_hal_msp.d \
 ./Core/Src/stm32l4xx_it.d \
 ./Core/Src/syscalls.d \
@@ -54,7 +54,7 @@ Core/Src/%.o Core/Src/%.su Core/Src/%.cyclo: ../Core/Src/%.c Core/Src/subdir.mk
 clean: clean-Core-2f-Src
 
 clean-Core-2f-Src:
-	-$(RM) ./Core/Src/Manager.cyclo ./Core/Src/Manager.d ./Core/Src/Manager.o ./Core/Src/Manager.su ./Core/Src/breaker.cyclo ./Core/Src/breaker.d ./Core/Src/breaker.o ./Core/Src/breaker.su ./Core/Src/clock.cyclo ./Core/Src/clock.d ./Core/Src/clock.o ./Core/Src/clock.su ./Core/Src/customer.cyclo ./Core/Src/customer.d ./Core/Src/customer.o ./Core/Src/customer.su ./Core/Src/freertos.cyclo ./Core/Src/freertos.d ./Core/Src/freertos.o ./Core/Src/freertos.su ./Core/Src/main.cyclo ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/main.su ./Core/Src/stm32l4xx_hal_msp.cyclo ./Core/Src/stm32l4xx_hal_msp.d ./Core/Src/stm32l4xx_hal_msp.o ./Core/Src/stm32l4xx_hal_msp.su ./Core/Src/stm32l4xx_it.cyclo ./Core/Src/stm32l4xx_it.d ./Core/Src/stm32l4xx_it.o ./Core/Src/stm32l4xx_it.su ./Core/Src/syscalls.cyclo ./Core/Src/syscalls.d ./Core/Src/syscalls.o ./Core/Src/syscalls.su ./Core/Src/sysmem.cyclo ./Core/Src/sysmem.d ./Core/Src/sysmem.o ./Core/Src/sysmem.su ./Core/Src/system_stm32l4xx.cyclo ./Core/Src/system_stm32l4xx.d ./Core/Src/system_stm32l4xx.o ./Core/Src/system_stm32l4xx.su ./Core/Src/teller.cyclo ./Core/Src/teller.d ./Core/Src/teller.o ./Core/Src/teller.su
+	-$(RM) ./Core/Src/breaker.cyclo ./Core/Src/breaker.d ./Core/Src/breaker.o ./Core/Src/breaker.su ./Core/Src/clock.cyclo ./Core/Src/clock.d ./Core/Src/clock.o ./Core/Src/clock.su ./Core/Src/customer.cyclo ./Core/Src/customer.d ./Core/Src/customer.o ./Core/Src/customer.su ./Core/Src/freertos.cyclo ./Core/Src/freertos.d ./Core/Src/freertos.o ./Core/Src/freertos.su ./Core/Src/main.cyclo ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/main.su ./Core/Src/manager.cyclo ./Core/Src/manager.d ./Core/Src/manager.o ./Core/Src/manager.su ./Core/Src/stm32l4xx_hal_msp.cyclo ./Core/Src/stm32l4xx_hal_msp.d ./Core/Src/stm32l4xx_hal_msp.o ./Core/Src/stm32l4xx_hal_msp.su ./Core/Src/stm32l4xx_it.cyclo ./Core/Src/stm32l4xx_it.d ./Core/Src/stm32l4xx_it.o ./Core/Src/stm32l4xx_it.su ./Core/Src/syscalls.cyclo ./Core/Src/syscalls.d ./Core/Src/syscalls.o ./Core/Src/syscalls.su ./Core/Src/sysmem.cyclo ./Core/Src/sysmem.d ./Core/Src/sysmem.o ./Core/Src/sysmem.su ./Core/Src/system_stm32l4xx.cyclo ./Core/Src/system_stm32l4xx.d ./Core/Src/system_stm32l4xx.o ./Core/Src/system_stm32l4xx.su ./Core/Src/teller.cyclo ./Core/Src/teller.d ./Core/Src/teller.o ./Core/Src/teller.su
 
 .PHONY: clean-Core-2f-Src
 

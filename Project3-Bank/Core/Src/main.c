@@ -29,7 +29,7 @@
 #include "string.h"
 #include "stdio.h"
 #include "stdlib.h"
-
+#include "manager.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -532,7 +532,10 @@ void StartManager(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+	  osMutexAcquire(MUTEXHandle, osWaitForever);
+	  run_manager();
+	  osMutexRelease(MUTEXHandle);
+
   }
   /* USER CODE END StartManager */
 }

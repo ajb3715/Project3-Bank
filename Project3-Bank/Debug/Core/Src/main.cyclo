@@ -9,5 +9,5 @@
 ../Core/Src/main.c:470:6:StartCustomers	1
 ../Core/Src/main.c:494:6:StartClock	4
 ../Core/Src/main.c:529:6:StartManager	1
-../Core/Src/main.c:547:6:StartBreaker	1
-../Core/Src/main.c:566:6:Error_Handler	1
+../Core/Src/main.c:550:6:StartBreaker	1
+../Core/Src/main.c:569:6:Error_Handler	1

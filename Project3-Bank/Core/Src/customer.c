@@ -21,6 +21,32 @@ WallClock max_customer_wait;
 int total_customers;
 WallClock fiveOclockSomewhere = {.hour = 17, .minute = 0, .second = 0};
 
+void init_GPIO(){
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+	GPIO_InitTypeDef GPIO_InitStruct = {0};
+	/*Configure GPIO pins : SHLD_D13_Pin SHLD_D12_Pin SHLD_D11_Pin SHLD_D7_SEG7_Clock_Pin */
+	GPIO_InitStruct.Pin = SHLD_D13_Pin|SHLD_D12_Pin|SHLD_D11_Pin|SHLD_D7_SEG7_Clock_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : SHLD_D8_SEG7_Data_Pin */
+	GPIO_InitStruct.Pin = SHLD_D8_SEG7_Data_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+	HAL_GPIO_Init(SHLD_D8_SEG7_Data_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : SHLD_D4_SEG7_Latch_Pin */
+	GPIO_InitStruct.Pin = SHLD_D4_SEG7_Latch_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+	HAL_GPIO_Init(SHLD_D4_SEG7_Latch_GPIO_Port, &GPIO_InitStruct);
+}
+
 void init_customer(){
 	total_customers = 0;
 	total_customer_wait = clock_init(total_customer_wait);
@@ -32,31 +58,10 @@ void init_customer(){
 	new_customer_time->minute = (*random_new_customer % 5);
 	new_customer_time->second = (*random_new_customer % 60);
 	*new_customer_time = add_clocks(*new_customer_time, Clock);
+	init_GPIO();
 
-	__HAL_RCC_GPIOA_CLK_ENABLE();
-	  __HAL_RCC_GPIOB_CLK_ENABLE();
-	GPIO_InitTypeDef GPIO_InitStruct = {0};
-	/*Configure GPIO pins : SHLD_D13_Pin SHLD_D12_Pin SHLD_D11_Pin SHLD_D7_SEG7_Clock_Pin */
-	  GPIO_InitStruct.Pin = SHLD_D13_Pin|SHLD_D12_Pin|SHLD_D11_Pin|SHLD_D7_SEG7_Clock_Pin;
-	  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	  GPIO_InitStruct.Pull = GPIO_NOPULL;
-	  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-	  /*Configure GPIO pin : SHLD_D8_SEG7_Data_Pin */
-	    GPIO_InitStruct.Pin = SHLD_D8_SEG7_Data_Pin;
-	    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	    GPIO_InitStruct.Pull = GPIO_NOPULL;
-	    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	    HAL_GPIO_Init(SHLD_D8_SEG7_Data_GPIO_Port, &GPIO_InitStruct);
-
-	    /*Configure GPIO pin : SHLD_D4_SEG7_Latch_Pin */
-	    GPIO_InitStruct.Pin = SHLD_D4_SEG7_Latch_Pin;
-	    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	    GPIO_InitStruct.Pull = GPIO_NOPULL;
-	    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-	    HAL_GPIO_Init(SHLD_D4_SEG7_Latch_GPIO_Port, &GPIO_InitStruct);
 }
+
 
 
 void run_customer(){
