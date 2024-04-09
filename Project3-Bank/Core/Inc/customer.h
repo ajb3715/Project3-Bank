@@ -29,5 +29,6 @@ extern int total_customers;
 
 void init_customer();
 void run_customer();
+void shiftOut(GPIO_TypeDef* data_port, uint16_t data_pin, GPIO_TypeDef* clock_port, uint16_t clock_pin, uint8_t value);
 
 #endif /* INC_CUSTOMER_H_ */
