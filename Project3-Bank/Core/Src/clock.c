@@ -11,7 +11,7 @@
 
 //The main clock to be checked by the program
 //Declare extern within the header file
-WallClock Clock;
+WallClock Clock = {.hour = 9, .minute = 0, .second = 0};
 
 
 WallClock clock_init(WallClock the_clock) {
@@ -105,6 +105,30 @@ int clock_compare(WallClock Clock1, WallClock Clock2){
 		return 2;
 	}
 	return 0;
+}
+
+WallClock subtract_Clocks(WallClock clock1, WallClock clock2) {
+    WallClock result;
+
+    // Convert both clocks to total seconds
+    int totalSeconds1 = clock1.hour * 3600 + clock1.minute * 60 + clock1.second;
+    int totalSeconds2 = clock2.hour * 3600 + clock2.minute * 60 + clock2.second;
+
+    // Calculate the difference in total seconds
+    int diffSeconds = totalSeconds1 - totalSeconds2;
+
+    // Handle negative differences
+    if (diffSeconds < 0) {
+        diffSeconds += 24 * 3600; // Assuming clocks are within a 24-hour period
+    }
+
+    // Convert difference back to clock format
+    result.hour = diffSeconds / 3600;
+    diffSeconds %= 3600;
+    result.minute = diffSeconds / 60;
+    result.second = diffSeconds % 60;
+
+    return result;
 }
 
 

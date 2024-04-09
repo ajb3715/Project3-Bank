@@ -109,6 +109,8 @@ typedef struct {
 	WallClock max_time_working;
 	WallClock max_time_waiting;
 
+	WallClock teller_start_wait;
+
 	//break functions
 	WallClock break_end;
 	//Tracks how long the current break is;

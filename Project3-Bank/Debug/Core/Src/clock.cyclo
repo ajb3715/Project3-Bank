@@ -3,3 +3,4 @@
 ../Core/Src/clock.c:35:11:clock_increment	3
 ../Core/Src/clock.c:55:11:add_clocks	4
 ../Core/Src/clock.c:81:5:clock_compare	10
+../Core/Src/clock.c:110:11:subtract_Clocks	2

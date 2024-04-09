@@ -13,6 +13,7 @@ WallClock clock_init(WallClock the_clock);
 WallClock clock_increment(WallClock the_clock);
 WallClock day_init(WallClock the_clock);
 WallClock add_clocks(WallClock Clock1, WallClock Clock2);
+WallClock subtract_Clocks(WallClock clock1, WallClock clock2);
 int clock_compare(WallClock Clock1, WallClock Clock2);
 
 

@@ -26,6 +26,9 @@
 #include "customer.h"
 #include "teller.h"
 #include "breaker.h"
+#include "string.h"
+#include "stdio.h"
+#include "stdlib.h"
 
 /* USER CODE END Includes */
 
@@ -142,6 +145,7 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
+
 
   /* USER CODE END SysInit */
 
@@ -309,9 +313,9 @@ static void MX_TIM6_Init(void)
 
   /* USER CODE END TIM6_Init 1 */
   htim6.Instance = TIM6;
-  htim6.Init.Prescaler = 666;
+  htim6.Init.Prescaler = 125;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim6.Init.Period = 222;
+  htim6.Init.Period = 100;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
   {
@@ -448,15 +452,10 @@ void StartTellers(void *argument)
 	initialize_tellers();
   for(;;)
   {
-	if(update_flag == 1){
     osMutexAcquire(MUTEXHandle, osWaitForever);
     manage_tellers();
     osMutexRelease(MUTEXHandle);
-    threads_ran += 1;
-	}
-//	if(threads_ran == 4){
-//		update_flag = 0;
-//	}
+
   }
   /* USER CODE END 5 */
 }
@@ -475,15 +474,12 @@ void StartCustomers(void *argument)
   init_customer();
   for(;;)
   {
-    if(update_flag == 1){
+
 	osMutexAcquire(MUTEXHandle, osWaitForever);
 	run_customer();
 	osMutexRelease(MUTEXHandle);
-	threads_ran += 1;
-	}
-//	if(threads_ran == 4){
-//		update_flag = 0;
-//	}
+
+
   }
   /* USER CODE END StartCustomers */
 }
@@ -503,14 +499,21 @@ void StartClock(void *argument)
   for(;;)
   {
 	if(update_flag == 1){
+	char buffer[256];
 	osMutexAcquire(MUTEXHandle, osWaitForever);
     Clock = clock_increment(Clock);
     osMutexRelease(MUTEXHandle);
-    threads_ran += 1;
+	if((Clock.minute  % 2) == 0 && (Clock.second % 60) == 30){
+		sprintf(buffer, "Current time: %d:%d:%d \r\n", Clock.hour, Clock.minute, Clock.second);
+		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
+		sprintf(buffer,"Customers waiting in Queue: %d \r\n", waiting_customers );
+		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
+		sprintf(buffer,"Teller 1: %d Teller 2: %d Teller 3: %d \r\n", tellers[1].status,tellers[2].status,tellers[3].status);
+		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
 	}
-//	if(threads_ran == 4){
-		update_flag = 0;
-//	}
+	}
+    update_flag = 0;
+
 
   }
   /* USER CODE END StartClock */
@@ -548,15 +551,9 @@ void StartBreaker(void *argument)
 	init_breaker();
   for(;;)
   {
-	    if(update_flag == 1){
-	    osMutexAcquire(MUTEXHandle, osWaitForever);
-	    run_breaker();
-	    osMutexRelease(MUTEXHandle);
-	    threads_ran += 1;
-		}
-//		if(threads_ran == 4){
-//			update_flag = 0;
-//		}
+	osMutexAcquire(MUTEXHandle, osWaitForever);
+	run_breaker();
+	osMutexRelease(MUTEXHandle);
 
   }
   /* USER CODE END StartBreaker */

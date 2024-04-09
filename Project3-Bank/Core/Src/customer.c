@@ -36,7 +36,7 @@ void init_customer(){
 
 void run_customer(){
 	// shift customers if first customers want to
-	if (waiting[0] == NULL){
+	if((waiting[0] == NULL) && waiting[1] != NULL){
 		for (int i = 0; i < waiting_customers; i++){
 			waiting[i] = waiting[i+1];
 		}

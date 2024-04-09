@@ -51,7 +51,7 @@ void initialize_tellers(void) {
         teller_wait[i-1] = tellers[i];
 
     }
-    	teller_wait[3] = VOID_TELLER;
+    	teller_wait[0] = VOID_TELLER;
 }
 
 //Maybe Put entire thing inside a case statement if at all possible,
@@ -63,13 +63,12 @@ void manage_tellers(void){
 		//Teller Currently Breaking
 		case 2:
 			//If teller is on break and it isn't over
-			if(clock_compare(tellers[i].current_break,tellers[i].break_end) != 1){
+			if(clock_compare(Clock,tellers[i].break_end) != 1){
 				//go onto next teller
-				tellers[i].current_break = clock_increment(tellers[i].current_break);
 				break;
 			}
 			//If teller is on break and it is over
-			if(clock_compare(tellers[i].current_break,tellers[i].break_end) == 1){
+			if(clock_compare(Clock,tellers[i].break_end) == 1){
 				if(clock_compare(tellers[i].current_break,tellers[i].max_break) == 0){
 					tellers[i].max_break = tellers[i].current_break;
 				}
@@ -92,6 +91,7 @@ void manage_tellers(void){
 					}
 					break;
 				}
+				tellers[i].teller_start_wait = Clock;
 			}
 			//Case Break
 			break;
@@ -99,12 +99,12 @@ void manage_tellers(void){
 		case 0:
 			//If teller is waiting and doesn't need to go on break;
 			if(tellers[i].take_break == 0){
-				tellers[i].current_time_waiting = clock_increment(tellers[i].current_time_waiting);
 				//Check to see if they can grab a customer
 
 				//Check to see if the queue is not empty, and this teller is at the front of the queue
 
 				  if((waiting[0] != NULL) && (tellers[i].id == teller_wait[0].id)){
+					tellers[i].current_time_waiting = subtract_Clocks(Clock,tellers[i].teller_start_wait);
 					Customer customer = *waiting[0];
 					waiting[0] = NULL;
 //				  	//TODO
@@ -136,16 +136,28 @@ void manage_tellers(void){
 					//Do with initialized Breaker in Breakers.C
 					breaker.start_break[i] = 1;
 					tellers[i].break_end = breaker.break_duration1;
+					tellers[i].current_break = breaker.break_duration1;
+					breaker.break_duration1 = clock_init(breaker.break_duration1);
+					breaker.break_time1 = clock_init(breaker.break_time1);
+					tellers[i].break_end = add_clocks(Clock, tellers[i].break_end);
 					break;
 				case 2:
 					//Do with initialized Breaker in Breakers.C
 					breaker.start_break[i] = 1;
 					tellers[i].break_end = breaker.break_duration2;
+					tellers[i].current_break = breaker.break_duration2;
+					breaker.break_duration2 = clock_init(breaker.break_duration2);
+					breaker.break_time2 = clock_init(breaker.break_time2);
+					tellers[i].break_end = add_clocks(Clock, tellers[i].break_end);
 					break;
 				case 3:
 					//Do with initialized Breaker in Breakers.C
 					breaker.start_break[i] = 1;
 					tellers[i].break_end = breaker.break_duration3;
+					tellers[i].current_break = breaker.break_duration3;
+					breaker.break_duration3 = clock_init(breaker.break_duration3);
+					breaker.break_time3 = clock_init(breaker.break_time3);
+					tellers[i].break_end = add_clocks(Clock, tellers[i].break_end);
 					break;
 				default:
 					break;
@@ -174,6 +186,7 @@ void manage_tellers(void){
 				tellers[i].total_time_working = add_clocks(tellers[i].total_time_working,tellers[i].current_time_working);
 				tellers[i].current_time_working = clock_init(tellers[i].current_time_working);
 				tellers[i].status = 0;
+				tellers[i].teller_start_wait = Clock;
 				//Have Teller RE-Enter Queue
 				if(!((teller_wait[0].id == i) && (teller_wait[1].id == i) && (teller_wait[2].id == i))){
 					if(teller_wait[0].id == 0){
@@ -193,15 +206,7 @@ void manage_tellers(void){
 			//Case Break
 			break;
 	}
-	char buffer[256];
-	if((Clock.minute  % 30) == 0 && (Clock.second % 60) == 30){
-		sprintf(buffer, "Current time: %d:%d:%d \r\n", Clock.hour, Clock.minute, Clock.second);
-		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
-		sprintf(buffer,"Customers waiting in Queue: %d \r\n", waiting_customers );
-		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
-		sprintf(buffer,"Teller 1: %d Teller 2: %d Teller 3: %d \r\n", tellers[1].status,tellers[2].status,tellers[3].status);
-		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
-	}
+
 }
 
 
