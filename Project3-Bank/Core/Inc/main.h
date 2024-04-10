@@ -128,19 +128,11 @@ typedef struct {
 } Teller;
 
 typedef struct {
-	//The breaker should
-	//First teller
+
 	int start_break[3];
-	WallClock break_time1;
-	WallClock break_duration1;
-	//First teller
+	WallClock break_time[3];
+	WallClock break_duration[3];
 
-	WallClock break_time2;
-	WallClock break_duration2;
-	//First teller
-
-	WallClock break_time3;
-	WallClock break_duration3;
 
 } Breaker;
 

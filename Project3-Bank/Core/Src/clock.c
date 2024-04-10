@@ -16,64 +16,68 @@ WallClock Clock = {.hour = 9, .minute = 0, .second = 0};
 
 WallClock clock_init(WallClock the_clock) {
 	//Initialize the main clock
-	the_clock.hour = 0;
-	the_clock.minute = 0;
-	the_clock.second = 0;
+	WallClock tempClock = the_clock;
+	tempClock.hour = 0;
+	tempClock.minute = 0;
+	tempClock.second = 0;
 
-	return the_clock;
+	return tempClock;
 }
 
 WallClock day_init(WallClock the_clock) {
 	//Initialize the main clock
-	the_clock.hour = 9;
-	the_clock.minute = 0;
-	the_clock.second = 0;
+	WallClock tempClock = the_clock;
+	tempClock.hour = 9;
+	tempClock.minute = 0;
+	tempClock.second = 0;
 
-	return the_clock;
+	return tempClock;
 }
 
 WallClock clock_increment(WallClock the_clock){
+	WallClock tempClock = the_clock;
 	//Check if second is full, if so then increment
 	//minute count and reset second count to 0
 	//if minute count full increment hour count and reset minutes to 0
-	if(the_clock.second >= 59){
-		the_clock.second -= 59;
-		if(the_clock.minute >= 59){
-			the_clock.minute -= 59;
-			the_clock.hour += 1;
+	if(tempClock.second >= 59){
+		tempClock.second -= 59;
+		if(tempClock.minute >= 59){
+			tempClock.minute -= 59;
+			tempClock.hour += 1;
 		}
 		else{
-			the_clock.minute += 1;
+			tempClock.minute += 1;
 		}
 	}
 	else{
-		the_clock.second += 1;
+		tempClock.second += 1;
 	}
-	return the_clock;
+	return tempClock;
 }
 
 WallClock add_clocks(WallClock Clock1, WallClock Clock2){
+	WallClock tempClock = the_clock;
 	//Adds seconds then minutes then hours, accounting for overflows as needed
 	//Add seconds and account overflow
-	Clock1.second += Clock2.second;
-	if(Clock1.second >= 60){
-		Clock1.minute += 1;
-		Clock1.second -= 60;
-		if(Clock1.minute >= 60){
-			Clock1.hour += 1;
-			Clock1.minute -= 60;
+	tempClock.second += Clock2.second;
+	if(tempClock.second >= 60){
+		tempClock.minute += 1;
+		tempClock.second -= 60;
+		if(tempClock.minute >= 60){
+			tempClock.hour += 1;
+			tempClock.minute -= 60;
 		}
 	}
 	//Add minutes and account overflow
-	Clock1.minute += Clock2.minute;
-	if(Clock1.minute >= 60){
-		Clock1.hour += 1;
-		Clock1.minute -= 60;
+	tempClock.minute += Clock2.minute;
+	if(tempClock.minute >= 60){
+		tempClock.hour += 1;
+		tempClock.minute -= 60;
 	}
 	//Add hours, don't account overflow as impossible
-	Clock1.hour += Clock2.hour;
+	tempClock.hour += Clock2.hour;
 
-	return Clock1;
+	return tempClock;
 }
 
 //if clock 1 is greater than clock 2(later) then return 0

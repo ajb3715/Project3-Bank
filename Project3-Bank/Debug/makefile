@@ -64,8 +64,8 @@ all: main-build
 main-build: Project3-Bank.elf secondary-outputs
 
 # Tool invocations
-Project3-Bank.elf Project3-Bank.map: $(OBJS) $(USER_OBJS) /Users/alex3/Desktop/Coding\ Stuff/Classwork/SWEN-563/Project3-Bank/Project3-Bank/STM32L476RGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Project3-Bank.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/Users/alex3/Desktop/Coding Stuff/Classwork/SWEN-563/Project3-Bank/Project3-Bank/STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Project3-Bank.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Project3-Bank.elf Project3-Bank.map: $(OBJS) $(USER_OBJS) C:\Users\alexb\OneDrive\Documents\Project3-Bank\Project3-Bank\Project3-Bank\STM32L476RGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Project3-Bank.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\alexb\OneDrive\Documents\Project3-Bank\Project3-Bank\Project3-Bank\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Project3-Bank.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
