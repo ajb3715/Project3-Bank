@@ -479,7 +479,6 @@ void StartCustomers(void *argument)
 	run_customer();
 	osMutexRelease(MUTEXHandle);
 
-
   }
   /* USER CODE END StartCustomers */
 }
@@ -503,17 +502,17 @@ void StartClock(void *argument)
 	osMutexAcquire(MUTEXHandle, osWaitForever);
     Clock = clock_increment(Clock);
     osMutexRelease(MUTEXHandle);
-	if((Clock.minute  % 2) == 0 && (Clock.second % 60) == 30){
+	if(/*(Clock.minute  % 2) == 0 &&*/ (Clock.second % 60) == 30){
 		sprintf(buffer, "Current time: %d:%d:%d \r\n", Clock.hour, Clock.minute, Clock.second);
 		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
-		sprintf(buffer,"Customers waiting in Queue: %d \r\n", waiting_customers );
+		sprintf(buffer,"Customers waiting in Queue: %d \r\n", waiting_customers);
 		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
 		sprintf(buffer,"Teller 1: %d Teller 2: %d Teller 3: %d \r\n", tellers[1].status,tellers[2].status,tellers[3].status);
 		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
 	}
 	}
     update_flag = 0;
-
+    osDelay(1);
 
   }
   /* USER CODE END StartClock */

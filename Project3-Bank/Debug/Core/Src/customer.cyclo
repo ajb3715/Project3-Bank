@@ -1,4 +1,4 @@
-../Core/Src/customer.c:24:6:init_GPIO	1
-../Core/Src/customer.c:50:6:init_customer	1
-../Core/Src/customer.c:67:6:run_customer	8
-../Core/Src/customer.c:111:6:shiftOut	2
+../Core/Src/customer.c:25:6:init_GPIO	1
+../Core/Src/customer.c:51:6:init_customer	1
+../Core/Src/customer.c:68:6:run_customer	8
+../Core/Src/customer.c:126:6:shiftOut	2
