@@ -7,7 +7,7 @@
 ../Core/Src/main.c:434:6:HAL_TIM_PeriodElapsedCallback	1
 ../Core/Src/main.c:447:6:StartTellers	1
 ../Core/Src/main.c:470:6:StartCustomers	1
-../Core/Src/main.c:493:6:StartClock	3
-../Core/Src/main.c:528:6:StartManager	1
-../Core/Src/main.c:549:6:StartBreaker	1
-../Core/Src/main.c:568:6:Error_Handler	1
+../Core/Src/main.c:493:6:StartClock	4
+../Core/Src/main.c:527:6:StartManager	1
+../Core/Src/main.c:548:6:StartBreaker	1
+../Core/Src/main.c:567:6:Error_Handler	1

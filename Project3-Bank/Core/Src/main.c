@@ -502,7 +502,7 @@ void StartClock(void *argument)
 	osMutexAcquire(MUTEXHandle, osWaitForever);
     Clock = clock_increment(Clock);
     osMutexRelease(MUTEXHandle);
-	if(/*(Clock.minute  % 2) == 0 &&*/ (Clock.second % 60) == 30){
+	if((Clock.minute  % 2) == 0 && (Clock.second % 60) == 30){
 		sprintf(buffer, "Current time: %d:%d:%d \r\n", Clock.hour, Clock.minute, Clock.second);
 		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
 		sprintf(buffer,"Customers waiting in Queue: %d \r\n", waiting_customers);
@@ -513,7 +513,6 @@ void StartClock(void *argument)
 	}
     update_flag = 0;
     osDelay(1);
-
   }
   /* USER CODE END StartClock */
 }

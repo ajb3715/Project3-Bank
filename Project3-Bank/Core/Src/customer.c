@@ -20,7 +20,8 @@ uint32_t* random_new_customer;
 WallClock total_customer_wait;
 WallClock max_customer_wait;
 int total_customers;
-WallClock fiveOclockSomewhere = {.hour = 10, .minute = 0, .second = 0};
+WallClock fiveOclockSomewhere = {.hour = 17, .minute = 0, .second = 0};
+
 
 void init_GPIO(){
 	__HAL_RCC_GPIOA_CLK_ENABLE();
@@ -60,6 +61,10 @@ void init_customer(){
 	new_customer_time.second = (*random_new_customer % 60);
 	new_customer_time = add_clocks(new_customer_time, Clock);
 	init_GPIO();
+	HAL_GPIO_WritePin(SHLD_D4_SEG7_Latch_GPIO_Port, SHLD_D4_SEG7_Latch_Pin, GPIO_PIN_RESET);
+			shiftOut(SHLD_D8_SEG7_Data_GPIO_Port, SHLD_D8_SEG7_Data_Pin, SHLD_D7_SEG7_Clock_GPIO_Port, SHLD_D7_SEG7_Clock_Pin, 0);
+			shiftOut(SHLD_D8_SEG7_Data_GPIO_Port, SHLD_D8_SEG7_Data_Pin, SHLD_D7_SEG7_Clock_GPIO_Port, SHLD_D7_SEG7_Clock_Pin, 0);
+			HAL_GPIO_WritePin(SHLD_D4_SEG7_Latch_GPIO_Port, SHLD_D4_SEG7_Latch_Pin, GPIO_PIN_SET);
 
 }
 
@@ -117,18 +122,8 @@ void run_customer(){
 
 
 
-	HAL_GPIO_WritePin(SHLD_D4_SEG7_Latch_GPIO_Port, SHLD_D4_SEG7_Latch_Pin, GPIO_PIN_RESET);
-	shiftOut(SHLD_D8_SEG7_Data_GPIO_Port, SHLD_D8_SEG7_Data_Pin, SHLD_D7_SEG7_Clock_GPIO_Port, SHLD_D7_SEG7_Clock_Pin, 0xC0);
-	shiftOut(SHLD_D8_SEG7_Data_GPIO_Port, SHLD_D8_SEG7_Data_Pin, SHLD_D7_SEG7_Clock_GPIO_Port, SHLD_D7_SEG7_Clock_Pin, 0);
-	HAL_GPIO_WritePin(SHLD_D4_SEG7_Latch_GPIO_Port, SHLD_D4_SEG7_Latch_Pin, GPIO_PIN_SET);
 }
 
-void shiftOut(GPIO_TypeDef* data_port, uint16_t data_pin, GPIO_TypeDef* clock_port, uint16_t clock_pin, uint8_t value) {
-	for(int ii=0x80; ii; ii>>=1) {
-		HAL_GPIO_WritePin(clock_port, clock_pin, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(data_port, data_pin, (value&ii)!=0);
-		HAL_GPIO_WritePin(clock_port, clock_pin, GPIO_PIN_SET);
-	}
-}
+
 
 
