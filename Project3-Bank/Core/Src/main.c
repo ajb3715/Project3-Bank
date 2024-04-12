@@ -50,14 +50,14 @@
 /* Private variables ---------------------------------------------------------*/
 RNG_HandleTypeDef hrng;
 
-TIM_HandleTypeDef htim6;
+TIM_HandleTypeDef htim2;
 
 UART_HandleTypeDef huart2;
 
-/* Definitions for Tellers */
-osThreadId_t TellersHandle;
-const osThreadAttr_t Tellers_attributes = {
-  .name = "Tellers",
+/* Definitions for Teller0 */
+osThreadId_t Teller0Handle;
+const osThreadAttr_t Teller0_attributes = {
+  .name = "Teller0",
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
@@ -89,6 +89,20 @@ const osThreadAttr_t Breaker_attributes = {
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for Teller1 */
+osThreadId_t Teller1Handle;
+const osThreadAttr_t Teller1_attributes = {
+  .name = "Teller1",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for Teller2 */
+osThreadId_t Teller2Handle;
+const osThreadAttr_t Teller2_attributes = {
+  .name = "Teller2",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
 /* Definitions for MUTEX */
 osMutexId_t MUTEXHandle;
 const osMutexAttr_t MUTEX_attributes = {
@@ -104,12 +118,14 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_RNG_Init(void);
-static void MX_TIM6_Init(void);
-void StartTellers(void *argument);
+static void MX_TIM2_Init(void);
+void StartTeller0(void *argument);
 void StartCustomers(void *argument);
 void StartClock(void *argument);
 void StartManager(void *argument);
 void StartBreaker(void *argument);
+void StartTeller1(void *argument);
+void StartTeller2(void *argument);
 
 /* USER CODE BEGIN PFP */
 int update_flag = 0;
@@ -153,9 +169,9 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   MX_RNG_Init();
-  MX_TIM6_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start_IT(&htim6);
+  HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -182,8 +198,8 @@ int main(void)
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of Tellers */
-  TellersHandle = osThreadNew(StartTellers, NULL, &Tellers_attributes);
+  /* creation of Teller0 */
+  Teller0Handle = osThreadNew(StartTeller0, NULL, &Teller0_attributes);
 
   /* creation of Customers */
   CustomersHandle = osThreadNew(StartCustomers, NULL, &Customers_attributes);
@@ -196,6 +212,12 @@ int main(void)
 
   /* creation of Breaker */
   BreakerHandle = osThreadNew(StartBreaker, NULL, &Breaker_attributes);
+
+  /* creation of Teller1 */
+  Teller1Handle = osThreadNew(StartTeller1, NULL, &Teller1_attributes);
+
+  /* creation of Teller2 */
+  Teller2Handle = osThreadNew(StartTeller2, NULL, &Teller2_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -239,13 +261,14 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
+  RCC_OscInitStruct.MSIState = RCC_MSI_ON;
+  RCC_OscInitStruct.MSICalibrationValue = 0;
+  RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_6;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_MSI;
   RCC_OscInitStruct.PLL.PLLM = 1;
-  RCC_OscInitStruct.PLL.PLLN = 10;
+  RCC_OscInitStruct.PLL.PLLN = 40;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7;
   RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
   RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
@@ -296,40 +319,47 @@ static void MX_RNG_Init(void)
 }
 
 /**
-  * @brief TIM6 Initialization Function
+  * @brief TIM2 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_TIM6_Init(void)
+static void MX_TIM2_Init(void)
 {
 
-  /* USER CODE BEGIN TIM6_Init 0 */
+  /* USER CODE BEGIN TIM2_Init 0 */
 
-  /* USER CODE END TIM6_Init 0 */
+  /* USER CODE END TIM2_Init 0 */
 
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
 
-  /* USER CODE BEGIN TIM6_Init 1 */
+  /* USER CODE BEGIN TIM2_Init 1 */
 
-  /* USER CODE END TIM6_Init 1 */
-  htim6.Instance = TIM6;
-  htim6.Init.Prescaler = 125;
-  htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim6.Init.Period = 100;
-  htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
-  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 125;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_DOWN;
+  htim2.Init.Period = 125;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
   {
     Error_Handler();
   }
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig) != HAL_OK)
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN TIM6_Init 2 */
+  /* USER CODE BEGIN TIM2_Init 2 */
 
-  /* USER CODE END TIM6_Init 2 */
+  /* USER CODE END TIM2_Init 2 */
 
 }
 
@@ -437,26 +467,27 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
 /* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_StartTellers */
+/* USER CODE BEGIN Header_StartTeller0 */
 /**
-  * @brief  Function implementing the Tellers thread.
+  * @brief  Function implementing the Teller0 thread.
   * @param  argument: Not used
   * @retval None
   */
-/* USER CODE END Header_StartTellers */
-void StartTellers(void *argument)
+/* USER CODE END Header_StartTeller0 */
+void StartTeller0(void *argument)
 {
   /* USER CODE BEGIN 5 */
 	//Initialize 3 tellers
   /* Infinite loop */
-	initialize_tellers();
+	init_teller(0);
   for(;;)
   {
-    osMutexAcquire(MUTEXHandle, osWaitForever);
-    manage_tellers();
-    osMutexRelease(MUTEXHandle);
-
+		osMutexAcquire(MUTEXHandle, osWaitForever);
+		manage_teller(0);
+		osMutexRelease(MUTEXHandle);
   }
+  osThreadYield();
+  osDelay(1);
   /* USER CODE END 5 */
 }
 
@@ -481,6 +512,8 @@ void StartCustomers(void *argument)
 
 
   }
+  osThreadYield();
+  osDelay(1);
   /* USER CODE END StartCustomers */
 }
 
@@ -499,22 +532,22 @@ void StartClock(void *argument)
   for(;;)
   {
 	if(update_flag == 1){
-	char buffer[256];
 	osMutexAcquire(MUTEXHandle, osWaitForever);
     Clock = clock_increment(Clock);
+//    char buffer[256];
+//	if((Clock.minute  % 2) == 0 && (Clock.second % 60) == 30){
+//			sprintf(buffer, "Current time: %d:%d:%d \r\n", Clock.hour, Clock.minute, Clock.second);
+//			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
+//			sprintf(buffer,"Customers waiting in Queue: %d \r\n", waiting_customers );
+//			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
+//			sprintf(buffer,"Teller 1: %d Teller 2: %d Teller 3: %d \r\n", tellers[1].status,tellers[2].status,tellers[3].status);
+//			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
+//		}
     osMutexRelease(MUTEXHandle);
-	if((Clock.minute  % 2) == 0 && (Clock.second % 60) == 30){
-		sprintf(buffer, "Current time: %d:%d:%d \r\n", Clock.hour, Clock.minute, Clock.second);
-		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
-		sprintf(buffer,"Customers waiting in Queue: %d \r\n", waiting_customers );
-		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
-		sprintf(buffer,"Teller 1: %d Teller 2: %d Teller 3: %d \r\n", tellers[1].status,tellers[2].status,tellers[3].status);
-		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
+//    osThreadYield();
 	}
-	}
-    update_flag = 0;
-
-
+	update_flag = 0;
+	osThreadYield();
   }
   /* USER CODE END StartClock */
 }
@@ -537,6 +570,8 @@ void StartManager(void *argument)
 	  osMutexRelease(MUTEXHandle);
 
   }
+  osThreadYield();
+  osDelay(1);
   /* USER CODE END StartManager */
 }
 
@@ -559,7 +594,55 @@ void StartBreaker(void *argument)
 	osMutexRelease(MUTEXHandle);
 
   }
+  osThreadYield();
+  osDelay(1);
   /* USER CODE END StartBreaker */
+}
+
+/* USER CODE BEGIN Header_StartTeller1 */
+/**
+* @brief Function implementing the Teller1 thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTeller1 */
+void StartTeller1(void *argument)
+{
+  /* USER CODE BEGIN StartTeller1 */
+  /* Infinite loop */
+	init_teller(1);
+  for(;;)
+  {
+	osMutexAcquire(MUTEXHandle, osWaitForever);
+	manage_teller(1);
+	osMutexRelease(MUTEXHandle);
+  }
+  osThreadYield();
+  osDelay(1);
+  /* USER CODE END StartTeller1 */
+}
+
+/* USER CODE BEGIN Header_StartTeller2 */
+/**
+* @brief Function implementing the Teller2 thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTeller2 */
+void StartTeller2(void *argument)
+{
+  /* USER CODE BEGIN StartTeller2 */
+  /* Infinite loop */
+	init_teller(2);
+  for(;;){
+	osMutexAcquire(MUTEXHandle, osWaitForever);
+	manage_teller(2);
+	osMutexRelease(MUTEXHandle);
+    //osDelay(1);
+  }
+  osThreadYield();
+  osDelay(1);
+  /* USER CODE END StartTeller2 */
 }
 
 /**

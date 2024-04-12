@@ -8,8 +8,8 @@
 #ifndef INC_TELLER_H_
 #define INC_TELLER_H_
 
-extern Teller tellers[4];
+extern Teller tellers[3];
 
-void initialize_tellers(void);
-void manage_tellers(void);
+void init_teller(int i);
+void manage_teller(int i);
 #endif /* INC_TELLER_H_ */

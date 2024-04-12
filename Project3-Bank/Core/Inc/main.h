@@ -112,6 +112,7 @@ typedef struct {
 	WallClock teller_start_wait;
 
 	//break functions
+	WallClock break_start;
 	WallClock break_end;
 	//Tracks how long the current break is;
 	WallClock current_break;

@@ -20,8 +20,8 @@ Teller tellers[3];
 Teller VOID_TELLER;
 
 
-void initialize_tellers(void) {
-    for (int i = 0; i < 3; i++) {
+//Pass in the teller ID
+void init_teller(int i) {
     	//Initialize ID
         tellers[i].id = i;
         // Initialize statuses
@@ -45,40 +45,35 @@ void initialize_tellers(void) {
         tellers[i].max_break = clock_init(tellers[i].max_break);
         tellers[i].min_break = clock_init(tellers[i].min_break);
         tellers[i].total_break = clock_init(tellers[i].total_break);
-
-        //initialize tellers in Queue
-    }
 }
 
-//Maybe Put entire thing inside a case statement if at all possible,
-//Would Simplify logic and speed it up
-void manage_tellers(void){
-	int i;
-	for (i = 0; i < 3; i++) {
-		switch (tellers[i].status){
-		//Teller Currently Breaking
-		case 2:
+//Pass in Teller ID
+void manage_teller(int i){
+	switch (tellers[i].status){
+	//Teller Currently Breaking
+	case 2:
 
-			//case break
-			break;
-		//Teller is Currently Waiting
-		case 0:
-			//It's time to go on break
-			if(breaker.start_break[i] == 1){
-				tellers[i].status = 2;
-				tellers[i].current_break[i] = Clock;
-				tellers[i].break_end = add_clocks(Clock, breaker.break_duration[i]);
-			}
-
-			//case break
-			break;
-		//Teller Currently Servicing
-		case 1:
-
-			//case break
-			break;
+		//case break
+		break;
+	//Teller is Currently Waiting
+	case 0:
+		//It's time to go on break
+		if(breaker.start_break[i] == 1){
+			tellers[i].status = 2;
+			tellers[i].break_start = Clock;
+			tellers[i].break_end = add_clocks(Clock, breaker.break_duration[i]);
+			//Now do metrics for ending the waiting period
 
 		}
+
+
+		//case break
+		break;
+	//Teller Currently Servicing
+	case 1:
+
+		//case break
+		break;
 
 	}
 }

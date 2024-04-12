@@ -39,24 +39,20 @@ WallClock clock_increment(WallClock the_clock){
 	//Check if second is full, if so then increment
 	//minute count and reset second count to 0
 	//if minute count full increment hour count and reset minutes to 0
-	if(tempClock.second >= 59){
-		tempClock.second -= 59;
-		if(tempClock.minute >= 59){
-			tempClock.minute -= 59;
-			tempClock.hour += 1;
-		}
-		else{
-			tempClock.minute += 1;
-		}
+	tempClock.second++;
+	if(tempClock.second == 60){
+		tempClock.minute++;
+		tempClock.second = 0;
 	}
-	else{
-		tempClock.second += 1;
+	if(tempClock.minute == 60){
+		tempClock.hour++;
+		tempClock.minute= 0;
 	}
 	return tempClock;
 }
 
 WallClock add_clocks(WallClock Clock1, WallClock Clock2){
-	WallClock tempClock = the_clock;
+	WallClock tempClock = Clock1;
 	//Adds seconds then minutes then hours, accounting for overflows as needed
 	//Add seconds and account overflow
 	tempClock.second += Clock2.second;
