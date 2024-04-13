@@ -12,9 +12,22 @@
 #include "teller.h"
 #include "stdio.h"
 #include "string.h"
+#include "cmsis_os.h"
 
 int num[] = {0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0X80, 0X90};
 int seg[] = {0xF1, 0xF2, 0xF4, 0xF8};
+
+int updateDigit(int spot, int num){
+	if (spot == 0){
+		return num / 1000;
+	} else if (spot == 1){
+		return (num / 100) % 10;
+	} else if (spot == 2){
+		return (num / 10) % 10;
+	} else {
+		return num % 10;
+	}
+}
 
 void run_manager(){
 //	if((Clock.minute % 2) == 0 && (Clock.second % 60) == 30){
@@ -82,17 +95,7 @@ void run_manager(){
 		}
 }
 
-int updateDigit(int spot, int num){
-	if (spot == 0){
-		return num / 1000;
-	} else if (spot == 1){
-		return (num / 100) % 10;
-	} else if (spot == 2){
-		return (num / 10) % 10;
-	} else {
-		return num % 10;
-	}
-}
+
 
 void shiftOut(GPIO_TypeDef* data_port, uint16_t data_pin, GPIO_TypeDef* clock_port, uint16_t clock_pin, uint8_t value) {
 	for(int ii=0x80; ii; ii>>=1) {

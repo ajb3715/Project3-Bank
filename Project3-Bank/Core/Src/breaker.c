@@ -58,7 +58,6 @@ void run_breaker(){
 		breaker.start_break[0] = 1;
 	}
 
-
 }
 
 void generate_next_break(int teller_id){

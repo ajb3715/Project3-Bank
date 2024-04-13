@@ -14,6 +14,7 @@
 #include "string.h"
 #include "stdlib.h"
 #include "stdio.h"
+#include "cmsis_os.h"
 
 Teller tellers[3];
 
@@ -76,6 +77,7 @@ void manage_teller(int i){
 		break;
 
 	}
+
 }
 
 

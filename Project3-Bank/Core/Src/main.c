@@ -335,7 +335,7 @@ static void MX_TIM6_Init(void)
 
   /* USER CODE END TIM6_Init 1 */
   htim6.Instance = TIM6;
-  htim6.Init.Prescaler = 8;
+  htim6.Init.Prescaler = 2;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim6.Init.Period = 224;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
@@ -478,7 +478,6 @@ void StartTeller0(void *argument)
 		manage_teller(0);
 		osMutexRelease(MUTEXHandle);
   }
-  osThreadYield();
   /* USER CODE END 5 */
 }
 
@@ -503,7 +502,6 @@ void StartCustomers(void *argument)
 
 
   }
-  osThreadYield();
   /* USER CODE END StartCustomers */
 }
 
@@ -524,6 +522,8 @@ void StartClock(void *argument)
 	if(update_flag == 1){
 	osMutexAcquire(MUTEXHandle, osWaitForever);
     Clock = clock_increment(Clock);
+	update_flag = 0;
+    osMutexRelease(MUTEXHandle);
     char buffer[256];
 	if((Clock.minute  % 2) == 0 && (Clock.second % 60) == 30){
 			sprintf(buffer, "Current time: %d:%d:%d \r\n", Clock.hour, Clock.minute, Clock.second);
@@ -533,9 +533,11 @@ void StartClock(void *argument)
 			sprintf(buffer,"Teller 1: %d Teller 2: %d Teller 3: %d \r\n", tellers[1].status,tellers[2].status,tellers[3].status);
 			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
 		}
-    osMutexRelease(MUTEXHandle);
+	osThreadYield();
+
 	}
-	update_flag = 0;
+
+	osThreadYield();
   }
   /* USER CODE END StartClock */
 }
@@ -556,9 +558,9 @@ void StartManager(void *argument)
 	  osMutexAcquire(MUTEXHandle, osWaitForever);
 	  run_manager();
 	  osMutexRelease(MUTEXHandle);
+	  osThreadYield();
 
   }
-  osThreadYield();
   /* USER CODE END StartManager */
 }
 
@@ -579,9 +581,9 @@ void StartBreaker(void *argument)
 	osMutexAcquire(MUTEXHandle, osWaitForever);
 	run_breaker();
 	osMutexRelease(MUTEXHandle);
+	osThreadYield();
 
   }
-  osThreadYield();
   /* USER CODE END StartBreaker */
 }
 
@@ -602,8 +604,8 @@ void StartTeller1(void *argument)
 	osMutexAcquire(MUTEXHandle, osWaitForever);
 	manage_teller(1);
 	osMutexRelease(MUTEXHandle);
+	osThreadYield();
   }
-  osThreadYield();
   /* USER CODE END StartTeller1 */
 }
 
@@ -623,9 +625,9 @@ void StartTeller2(void *argument)
 	osMutexAcquire(MUTEXHandle, osWaitForever);
 	manage_teller(2);
 	osMutexRelease(MUTEXHandle);
+	osThreadYield();
     //osDelay(1);
   }
-  osThreadYield();
   /* USER CODE END StartTeller2 */
 }
 

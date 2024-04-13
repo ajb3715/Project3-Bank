@@ -9,6 +9,7 @@
 #include "clock.h"
 #include "customer.h"
 #include "main.h"
+#include "cmsis_os.h"
 
 int max_customer_waiting;
 int waiting_customers;
@@ -119,7 +120,6 @@ void run_customer(){
 	}
 
 //	uint32_t display_num = 0;
-
 
 
 }
