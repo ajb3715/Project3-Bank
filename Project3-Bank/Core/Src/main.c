@@ -50,7 +50,7 @@
 /* Private variables ---------------------------------------------------------*/
 RNG_HandleTypeDef hrng;
 
-TIM_HandleTypeDef htim2;
+TIM_HandleTypeDef htim6;
 
 UART_HandleTypeDef huart2;
 
@@ -118,7 +118,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_RNG_Init(void);
-static void MX_TIM2_Init(void);
+static void MX_TIM6_Init(void);
 void StartTeller0(void *argument);
 void StartCustomers(void *argument);
 void StartClock(void *argument);
@@ -129,7 +129,6 @@ void StartTeller2(void *argument);
 
 /* USER CODE BEGIN PFP */
 int update_flag = 0;
-int threads_ran = 0;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -169,9 +168,9 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   MX_RNG_Init();
-  MX_TIM2_Init();
+  MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start_IT(&htim2);
+  HAL_TIM_Base_Start_IT(&htim6);
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -319,47 +318,40 @@ static void MX_RNG_Init(void)
 }
 
 /**
-  * @brief TIM2 Initialization Function
+  * @brief TIM6 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_TIM2_Init(void)
+static void MX_TIM6_Init(void)
 {
 
-  /* USER CODE BEGIN TIM2_Init 0 */
+  /* USER CODE BEGIN TIM6_Init 0 */
 
-  /* USER CODE END TIM2_Init 0 */
+  /* USER CODE END TIM6_Init 0 */
 
-  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
 
-  /* USER CODE BEGIN TIM2_Init 1 */
+  /* USER CODE BEGIN TIM6_Init 1 */
 
-  /* USER CODE END TIM2_Init 1 */
-  htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 125;
-  htim2.Init.CounterMode = TIM_COUNTERMODE_DOWN;
-  htim2.Init.Period = 125;
-  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
-  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  /* USER CODE END TIM6_Init 1 */
+  htim6.Instance = TIM6;
+  htim6.Init.Prescaler = 24;
+  htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim6.Init.Period = 223;
+  htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
   {
     Error_Handler();
   }
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN TIM2_Init 2 */
+  /* USER CODE BEGIN TIM6_Init 2 */
 
-  /* USER CODE END TIM2_Init 2 */
+  /* USER CODE END TIM6_Init 2 */
 
 }
 
@@ -534,20 +526,18 @@ void StartClock(void *argument)
 	if(update_flag == 1){
 	osMutexAcquire(MUTEXHandle, osWaitForever);
     Clock = clock_increment(Clock);
-//    char buffer[256];
-//	if((Clock.minute  % 2) == 0 && (Clock.second % 60) == 30){
-//			sprintf(buffer, "Current time: %d:%d:%d \r\n", Clock.hour, Clock.minute, Clock.second);
-//			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
-//			sprintf(buffer,"Customers waiting in Queue: %d \r\n", waiting_customers );
-//			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
-//			sprintf(buffer,"Teller 1: %d Teller 2: %d Teller 3: %d \r\n", tellers[1].status,tellers[2].status,tellers[3].status);
-//			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
-//		}
+    char buffer[256];
+	if((Clock.minute  % 2) == 0 && (Clock.second % 60) == 30){
+			sprintf(buffer, "Current time: %d:%d:%d \r\n", Clock.hour, Clock.minute, Clock.second);
+			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
+			sprintf(buffer,"Customers waiting in Queue: %d \r\n", waiting_customers );
+			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
+			sprintf(buffer,"Teller 1: %d Teller 2: %d Teller 3: %d \r\n", tellers[1].status,tellers[2].status,tellers[3].status);
+			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
+		}
     osMutexRelease(MUTEXHandle);
-//    osThreadYield();
 	}
 	update_flag = 0;
-	osThreadYield();
   }
   /* USER CODE END StartClock */
 }
