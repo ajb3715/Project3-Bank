@@ -1,1 +1,3 @@
-../Core/Src/Manager.c:16:6:run_manager	5
+../Core/Src/Manager.c:19:6:run_manager	9
+../Core/Src/Manager.c:85:5:updateDigit	4
+../Core/Src/Manager.c:97:6:shiftOut	2

@@ -335,9 +335,9 @@ static void MX_TIM6_Init(void)
 
   /* USER CODE END TIM6_Init 1 */
   htim6.Instance = TIM6;
-  htim6.Init.Prescaler = 24;
+  htim6.Init.Prescaler = 8;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim6.Init.Period = 223;
+  htim6.Init.Period = 224;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
   {
@@ -479,7 +479,6 @@ void StartTeller0(void *argument)
 		osMutexRelease(MUTEXHandle);
   }
   osThreadYield();
-  osDelay(1);
   /* USER CODE END 5 */
 }
 
@@ -505,7 +504,6 @@ void StartCustomers(void *argument)
 
   }
   osThreadYield();
-  osDelay(1);
   /* USER CODE END StartCustomers */
 }
 
@@ -561,7 +559,6 @@ void StartManager(void *argument)
 
   }
   osThreadYield();
-  osDelay(1);
   /* USER CODE END StartManager */
 }
 
@@ -585,7 +582,6 @@ void StartBreaker(void *argument)
 
   }
   osThreadYield();
-  osDelay(1);
   /* USER CODE END StartBreaker */
 }
 
@@ -608,7 +604,6 @@ void StartTeller1(void *argument)
 	osMutexRelease(MUTEXHandle);
   }
   osThreadYield();
-  osDelay(1);
   /* USER CODE END StartTeller1 */
 }
 
@@ -631,7 +626,6 @@ void StartTeller2(void *argument)
     //osDelay(1);
   }
   osThreadYield();
-  osDelay(1);
   /* USER CODE END StartTeller2 */
 }
 
