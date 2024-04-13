@@ -6,10 +6,10 @@
 ../Core/Src/main.c:398:13:MX_GPIO_Init	1
 ../Core/Src/main.c:456:6:HAL_TIM_PeriodElapsedCallback	1
 ../Core/Src/main.c:469:6:StartTeller0	1
-../Core/Src/main.c:491:6:StartCustomers	1
-../Core/Src/main.c:515:6:StartClock	4
-../Core/Src/main.c:552:6:StartManager	1
-../Core/Src/main.c:574:6:StartBreaker	1
-../Core/Src/main.c:597:6:StartTeller1	1
-../Core/Src/main.c:619:6:StartTeller2	1
-../Core/Src/main.c:638:6:Error_Handler	1
+../Core/Src/main.c:492:6:StartCustomers	1
+../Core/Src/main.c:516:6:StartClock	4
+../Core/Src/main.c:553:6:StartManager	1
+../Core/Src/main.c:575:6:StartBreaker	1
+../Core/Src/main.c:598:6:StartTeller1	1
+../Core/Src/main.c:620:6:StartTeller2	1
+../Core/Src/main.c:639:6:Error_Handler	1

@@ -335,9 +335,9 @@ static void MX_TIM6_Init(void)
 
   /* USER CODE END TIM6_Init 1 */
   htim6.Instance = TIM6;
-  htim6.Init.Prescaler = 1;
+  htim6.Init.Prescaler = 600;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim6.Init.Period = 65534;
+  htim6.Init.Period = 222;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
   {
@@ -477,6 +477,7 @@ void StartTeller0(void *argument)
 		osMutexAcquire(MUTEXHandle, osWaitForever);
 		manage_teller(0);
 		osMutexRelease(MUTEXHandle);
+		osThreadYield();
   }
   /* USER CODE END 5 */
 }
@@ -536,7 +537,7 @@ void StartClock(void *argument)
 	osThreadYield();
 
 	}
-
+	update_flag = 0;
 	osThreadYield();
   }
   /* USER CODE END StartClock */

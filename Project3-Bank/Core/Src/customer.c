@@ -108,6 +108,9 @@ void run_customer(){
 		HAL_RNG_GenerateRandomNumber(&hrng, &random_new_customer);
 		new_customer_time.hour = 0;
 		new_customer_time.minute = (random_new_customer % 5);
+		if(new_customer_time.minute == 0){
+			new_customer_time.minute = 1;
+		}
 		new_customer_time.second = (random_new_customer % 60);
 		new_customer_time = add_clocks(new_customer_time, Clock);
 //		total_customers += 1;
