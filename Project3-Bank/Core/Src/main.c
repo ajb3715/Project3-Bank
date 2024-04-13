@@ -335,9 +335,9 @@ static void MX_TIM6_Init(void)
 
   /* USER CODE END TIM6_Init 1 */
   htim6.Instance = TIM6;
-  htim6.Init.Prescaler = 2;
+  htim6.Init.Prescaler = 1;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim6.Init.Period = 224;
+  htim6.Init.Period = 65534;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
   {
@@ -499,7 +499,7 @@ void StartCustomers(void *argument)
 	osMutexAcquire(MUTEXHandle, osWaitForever);
 	run_customer();
 	osMutexRelease(MUTEXHandle);
-
+	osThreadYield();
 
   }
   /* USER CODE END StartCustomers */
@@ -525,7 +525,7 @@ void StartClock(void *argument)
 	update_flag = 0;
     osMutexRelease(MUTEXHandle);
     char buffer[256];
-	if((Clock.minute  % 2) == 0 && (Clock.second % 60) == 30){
+	if((Clock.minute  % 10) == 0 && (Clock.second % 60) == 30){
 			sprintf(buffer, "Current time: %d:%d:%d \r\n", Clock.hour, Clock.minute, Clock.second);
 			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
 			sprintf(buffer,"Customers waiting in Queue: %d \r\n", waiting_customers );

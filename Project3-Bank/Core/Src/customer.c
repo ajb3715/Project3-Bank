@@ -15,8 +15,7 @@ int max_customer_waiting;
 int waiting_customers;
 Customer* waiting[100];
 WallClock new_customer_time;
-uint32_t* random_service_time;
-uint32_t* random_new_customer;
+
 //Customer c;
 WallClock total_customer_wait;
 WallClock max_customer_wait;
@@ -51,15 +50,16 @@ void init_GPIO(){
 }
 
 void init_customer(){
+	uint32_t random_new_customer = 0;
 	total_customers = 0;
 	total_customer_wait = clock_init(total_customer_wait);
 	max_customer_waiting = 0;
 	max_customer_wait = clock_init(max_customer_wait);
 	waiting_customers = 0;
-	HAL_RNG_GenerateRandomNumber(&hrng, random_new_customer);
+	HAL_RNG_GenerateRandomNumber(&hrng, &random_new_customer);
 	new_customer_time.hour = 0;
-	new_customer_time.minute = (*random_new_customer % 5);
-	new_customer_time.second = (*random_new_customer % 60);
+	new_customer_time.minute = (random_new_customer % 5);
+	new_customer_time.second = (random_new_customer % 60);
 	new_customer_time = add_clocks(new_customer_time, Clock);
 	init_GPIO();
 	HAL_GPIO_WritePin(SHLD_D4_SEG7_Latch_GPIO_Port, SHLD_D4_SEG7_Latch_Pin, GPIO_PIN_RESET);
@@ -72,6 +72,8 @@ void init_customer(){
 
 
 void run_customer(){
+	uint32_t random_service_time =0;
+	uint32_t random_new_customer = 0;
 	// shift customers if first customers want to
 	if((waiting[0] == NULL) && waiting[1] != NULL){
 		for (int i = 0; i < waiting_customers; i++){
@@ -94,7 +96,7 @@ void run_customer(){
 //		char buf[20];
 //				sprintf(buf, "\r\n\r\n%d\r\n\r\n", waiting[1]->id);
 //				HAL_UART_Transmit(&huart2, (uint8_t*)buf, strlen(buf), 100);
-		HAL_RNG_GenerateRandomNumber(&hrng, random_service_time);
+		HAL_RNG_GenerateRandomNumber(&hrng, &random_service_time);
 //		WallClock service_time = { .hour = 0, .minute = (*random_service_time % 7), .second = (*random_service_time % 60)};
 		WallClock service_time = { .hour = 0, .minute = 2, .second = 31};
 		Customer *c = malloc(sizeof(Customer));
@@ -103,10 +105,10 @@ void run_customer(){
 		c->entered_queue_time = Clock;
 		c->total_queue_time = (WallClock) {.hour = 0, .minute = 0, .second = 0};
 		waiting[waiting_customers++] = c;
-		HAL_RNG_GenerateRandomNumber(&hrng, random_new_customer);
+		HAL_RNG_GenerateRandomNumber(&hrng, &random_new_customer);
 		new_customer_time.hour = 0;
-		new_customer_time.minute = (*random_new_customer % 5);
-		new_customer_time.second = (*random_new_customer % 60);
+		new_customer_time.minute = (random_new_customer % 5);
+		new_customer_time.second = (random_new_customer % 60);
 		new_customer_time = add_clocks(new_customer_time, Clock);
 //		total_customers += 1;
 //		waiting_customers++;
