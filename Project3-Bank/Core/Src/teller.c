@@ -81,6 +81,7 @@ void manage_teller(int i){
 				tellers[i].status = 2;
 				tellers[i].break_start = Clock;
 				tellers[i].break_end = add_clocks(Clock, breaker.break_duration[i]);
+				tellers[i].num_breaks++;
 				//Now do metrics for ending the waiting period
 				tellers[i].current_time_waiting = subtract_Clocks(Clock, tellers[i].teller_start_wait);
 				tellers[i].total_time_waiting = add_clocks(tellers[i].total_time_waiting,tellers[i].current_time_waiting);
@@ -98,6 +99,7 @@ void manage_teller(int i){
 				tellers[i].status = 1;
 				//If there is a front customer, grab him
 				Customer grabbed_customer = *waiting[0];
+				tellers[i].service_start_time = Clock;
 				tellers[i].service_end_time = grabbed_customer.service_time;
 				//Do metrics for the customer that was waiting
 				grabbed_customer.total_queue_time = subtract_Clocks(Clock, grabbed_customer.entered_queue_time);
@@ -123,6 +125,25 @@ void manage_teller(int i){
 			break;
 		//Teller Currently Servicing
 		case 1:
+			//Check, is the teller done servicing this customer?
+			if(clock_compare(Clock, tellers[i].service_end_time) == 1){
+				//Have the teller go back to waiting
+				tellers[i].status = 0;
+				tellers[i].teller_start_wait = Clock;
+
+				//Now do the metrics for the service time
+				tellers[i].current_time_working = subtract_Clocks(Clock, tellers[i].service_start_time);
+				if(clock_compare(tellers[i].current_time_working, tellers[i].max_time_working) == 0){
+					tellers[i].max_time_working = tellers[i].current_time_working;
+				}
+
+				//Reset all the needed metrics
+				tellers[i].current_time_working = clock_init(tellers[i].current_time_working);
+				tellers[i].service_end_time = clock_init(tellers[i].service_end_time);
+				tellers[i].service_start_time = clock_init(tellers[i].service_start_time);
+			}
+
+			//Otherwise, just keep on servicing
 
 			//case break
 			break;

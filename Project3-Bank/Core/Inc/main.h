@@ -93,9 +93,9 @@ typedef struct {
 	//identification
 	int id;
 	int status; // 0 is waiting, 1 is servicing, 2 is breaking
-	int take_break; // 0 is don't take break, 1 is break needs to be taken
 
 	//service function
+	WallClock service_start_time;
 	WallClock service_end_time;
 
 	//metrics
