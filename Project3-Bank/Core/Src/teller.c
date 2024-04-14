@@ -15,7 +15,7 @@
 #include "stdlib.h"
 #include "stdio.h"
 #include "cmsis_os.h"
-
+#include "clock.h"
 Teller tellers[3];
 
 Teller VOID_TELLER;
@@ -64,9 +64,36 @@ void manage_teller(int i){
 			tellers[i].break_start = Clock;
 			tellers[i].break_end = add_clocks(Clock, breaker.break_duration[i]);
 			//Now do metrics for ending the waiting period
+			tellers[i].current_time_waiting = subtract_Clocks(Clock, tellers[i].teller_start_wait);
+			tellers[i].total_time_waiting = add_clocks(tellers[i].total_time_waiting,tellers[i].current_time_waiting);
+			if(clock_compare(tellers[i].current_time_waiting, tellers[i].max_time_waiting) == 0){
+				tellers[i].max_time_waiting = tellers[i].current_time_waiting;
+			}
 
 		}
+		//It's not time to go on break, see if there is a customer waiting
+		else if(waiting[0] != NULL){
+			//If there is a front customer, grab him
+			Customer grabbed_customer = *waiting[0];
+			tellers[i].service_end_time = grabbed_customer.service_time;
+			//Do metrics for the customer that was waiting
+			grabbed_customer.total_queue_time = subtract_Clocks(Clock, grabbed_customer.entered_queue_time);
+			total_customer_wait = add_clocks(total_customer_wait, grabbed_customer.total_queue_time);
+			if(clock_compare(grabbed_customer.total_queue_time, max_customer_wait) == 0){
+				max_customer_wait = grabbed_customer.total_queue_time;
+			}
 
+			//Now erase the first customer
+			waiting[0] = NULL;
+
+			//Now do metrics for ending the waiting period
+			tellers[i].current_time_waiting = subtract_Clocks(Clock, tellers[i].teller_start_wait);
+			tellers[i].total_time_waiting = add_clocks(tellers[i].total_time_waiting,tellers[i].current_time_waiting);
+			if(clock_compare(tellers[i].current_time_waiting, tellers[i].max_time_waiting) == 0){
+				tellers[i].max_time_waiting = tellers[i].current_time_waiting;
+		}
+
+		//otherwise, just keep on waiting
 
 		//case break
 		break;
