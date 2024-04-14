@@ -76,7 +76,7 @@ void run_customer(){
 	uint32_t random_new_customer = 0;
 	// shift customers if first customers want to
 	if((waiting[0] == NULL) && waiting[1] != NULL){
-		for (int i = 0; i < waiting_customers; i++){
+		for (int i = 0; i <= waiting_customers; i++){
 			waiting[i] = waiting[i+1];
 //			waiting[i]->entered_queue_time = waiting[i+1]->entered_queue_time;
 //			waiting[i]->id = waiting[i+1]->id;
@@ -84,7 +84,7 @@ void run_customer(){
 //			waiting[i]->service_time = waiting[i+1]->service_time;
 //			waiting[i]->total_queue_time = waiting[i+1]->total_queue_time;
 		}
-		waiting_customers--;
+		//waiting_customers--;
 	}
 
 //	for (int i = 0; i < waiting_customers; i++){

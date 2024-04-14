@@ -55,6 +55,7 @@ void manage_teller(int i){
 			//Is it time to come off break and start waiting again
 			if(clock_compare(Clock,tellers[i].break_end) == 1){
 				tellers[i].status = 0;
+				breaker.start_break[i] = 0;
 			//Now do the metrics for the breaking period
 				tellers[i].current_break = subtract_Clocks(Clock, tellers[i].break_start);
 				if(clock_compare(tellers[i].current_break, tellers[i].max_break) == 0){
@@ -102,6 +103,7 @@ void manage_teller(int i){
 				tellers[i].status = 1;
 				//If there is a front customer, grab him
 				Customer grabbed_customer = *waiting[0];
+				waiting_customers--;
 				tellers[i].service_start_time = Clock;
 				tellers[i].service_end_time = add_clocks(grabbed_customer.service_time, Clock);
 				//Do metrics for the customer that was waiting

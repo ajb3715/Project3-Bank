@@ -39,7 +39,7 @@ void run_manager(){
 //			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
 //		}
 
-	if (clock_compare(Clock, fiveOclockSomewhere) == 0 && waiting_customers == 0 && tellers[3].status == 0 && tellers[1].status == 0 && tellers[2].status == 0){
+	if (clock_compare(Clock, fiveOclockSomewhere) == 0 && waiting_customers == 0 && tellers[0].status == 0 && tellers[1].status == 0 && tellers[2].status == 0){
 		day_over = 1;
 		// Everyone stats
 		int total_customers = 0;
