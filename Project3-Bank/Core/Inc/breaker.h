@@ -15,3 +15,4 @@ extern Breaker breaker;
 
 void init_breaker(void);
 void run_breaker();
+void generate_next_break(int i);

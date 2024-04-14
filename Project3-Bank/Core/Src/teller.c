@@ -80,6 +80,7 @@ void manage_teller(int i){
 		case 0:
 			//It's time to go on break
 			if(breaker.start_break[i] == 1){
+				breaker.start_break[i] = 0;
 				tellers[i].status = 2;
 				tellers[i].break_start = Clock;
 				tellers[i].break_end = add_clocks(Clock, breaker.break_duration[i]);
