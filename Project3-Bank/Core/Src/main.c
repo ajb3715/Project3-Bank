@@ -531,7 +531,7 @@ void StartClock(void *argument)
 			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
 			sprintf(buffer,"Customers waiting in Queue: %d \r\n", waiting_customers );
 			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
-			sprintf(buffer,"Teller 1: %d Teller 2: %d Teller 3: %d \r\n", tellers[1].status,tellers[2].status,tellers[3].status);
+			sprintf(buffer,"Teller 1: %d Teller 2: %d Teller 3: %d \r\n", tellers[0].status,tellers[1].status,tellers[2].status);
 			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
 		}
 	osThreadYield();
