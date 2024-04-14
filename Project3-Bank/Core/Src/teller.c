@@ -27,7 +27,6 @@ void init_teller(int i) {
         tellers[i].id = i;
         // Initialize statuses
         tellers[i].status = 0;
-        tellers[i].take_break = 0;
         //service function
         tellers[i].service_end_time = clock_init(tellers[i].service_end_time);
         //Initialize metrics
@@ -67,6 +66,9 @@ void manage_teller(int i){
 			//Now reset all the metrics
 				tellers[i].current_break = clock_init(tellers[i].current_break);
 				tellers[i].break_start = clock_init(tellers[i].break_start);
+
+			//Now set up the next break
+				generate_next_break(i);
 			}
 
 			//Otherwise just keep on breaking
@@ -100,7 +102,7 @@ void manage_teller(int i){
 				//If there is a front customer, grab him
 				Customer grabbed_customer = *waiting[0];
 				tellers[i].service_start_time = Clock;
-				tellers[i].service_end_time = grabbed_customer.service_time;
+				tellers[i].service_end_time = add_clocks(grabbed_customer.service_time, Clock);
 				//Do metrics for the customer that was waiting
 				grabbed_customer.total_queue_time = subtract_Clocks(Clock, grabbed_customer.entered_queue_time);
 				total_customer_wait = add_clocks(total_customer_wait, grabbed_customer.total_queue_time);
@@ -108,7 +110,7 @@ void manage_teller(int i){
 					max_customer_wait = grabbed_customer.total_queue_time;
 				}
 
-				//Now erase the first customer
+				//Now erase the first customer, this should then shift the other customers forward
 				waiting[0] = NULL;
 
 				//Now do metrics for ending the waiting period

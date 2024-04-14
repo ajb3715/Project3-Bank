@@ -87,9 +87,9 @@ void run_customer(){
 		waiting_customers--;
 	}
 
-	for (int i = 0; i < waiting_customers; i++){
-		waiting[i]->total_queue_time = clock_increment(waiting[i]->total_queue_time);
-	}
+//	for (int i = 0; i < waiting_customers; i++){
+//		waiting[i]->total_queue_time = clock_increment(waiting[i]->total_queue_time);
+//	}
 
 	// add new customer if enough time has passed
 	if (clock_compare(Clock, new_customer_time) == 1 && clock_compare(Clock, fiveOclockSomewhere) == 2){
@@ -105,6 +105,7 @@ void run_customer(){
 		c->entered_queue_time = Clock;
 		c->total_queue_time = (WallClock) {.hour = 0, .minute = 0, .second = 0};
 		waiting[waiting_customers++] = c;
+//		waiting[waiting_customers + 1] = c;
 		HAL_RNG_GenerateRandomNumber(&hrng, &random_new_customer);
 		new_customer_time.hour = 0;
 		new_customer_time.minute = (random_new_customer % 5);

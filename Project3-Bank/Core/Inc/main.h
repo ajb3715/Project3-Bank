@@ -82,6 +82,7 @@ void Error_Handler(void);
 extern RNG_HandleTypeDef hrng;
 extern UART_HandleTypeDef huart2;
 extern int update_flag;
+extern int day_over;
 
 typedef struct {
     int hour;

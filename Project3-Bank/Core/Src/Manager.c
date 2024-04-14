@@ -40,6 +40,7 @@ void run_manager(){
 //		}
 
 	if (clock_compare(Clock, fiveOclockSomewhere) == 0 && waiting_customers == 0 && tellers[3].status == 0 && tellers[1].status == 0 && tellers[2].status == 0){
+		day_over = 1;
 		// Everyone stats
 		int total_customers = 0;
 		WallClock total_service_time = {.hour = 0, .minute = 0, .second = 0};

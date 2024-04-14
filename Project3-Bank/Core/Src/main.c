@@ -34,6 +34,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+int day_over = 0;
 
 /* USER CODE END PTD */
 
@@ -520,7 +521,7 @@ void StartClock(void *argument)
 	Clock = day_init(Clock);
   for(;;)
   {
-	if(update_flag == 1){
+	if(update_flag == 1 && day_over != 1){
 	osMutexAcquire(MUTEXHandle, osWaitForever);
     Clock = clock_increment(Clock);
 	update_flag = 0;
@@ -536,6 +537,9 @@ void StartClock(void *argument)
 		}
 	osThreadYield();
 
+	}
+	if(day_over == 1){
+		Clock = clock_init(Clock);
 	}
 	update_flag = 0;
 	osThreadYield();
