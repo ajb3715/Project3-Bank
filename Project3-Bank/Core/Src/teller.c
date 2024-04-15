@@ -37,14 +37,14 @@ void init_teller(int i) {
         tellers[i].current_time_working = clock_init(tellers[i].current_time_working);
         tellers[i].current_time_waiting = clock_init(tellers[i].current_time_waiting);
         tellers[i].max_time_working = clock_init(tellers[i].max_time_working);
-        tellers[i].max_time_working = clock_init(tellers[i].max_time_working);
+        tellers[i].max_time_waiting = clock_init(tellers[i].max_time_waiting);
         //Initialize break taking
         tellers[i].break_end = clock_init(tellers[i].break_end);
         tellers[i].current_break = clock_init(tellers[i].current_break);
         //Initialize break metrics
         tellers[i].num_breaks = 0;
         tellers[i].max_break = clock_init(tellers[i].max_break);
-        tellers[i].min_break = clock_init(tellers[i].min_break);
+        tellers[i].min_break = day_init(tellers[i].min_break);
         tellers[i].total_break = clock_init(tellers[i].total_break);
 }
 
