@@ -101,6 +101,7 @@ typedef struct {
 
 	//metrics
 	int customers_served;
+	int waiting_count;
 	WallClock total_time_working;
 	WallClock total_time_waiting;
 

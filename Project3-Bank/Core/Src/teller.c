@@ -31,6 +31,7 @@ void init_teller(int i) {
         tellers[i].service_end_time = clock_init(tellers[i].service_end_time);
         //Initialize metrics
         tellers[i].customers_served = 0;
+        tellers[i].waiting_count = 0;
         tellers[i].total_time_working = clock_init(tellers[i].total_time_working);
         tellers[i].total_time_waiting = clock_init(tellers[i].total_time_waiting);
         tellers[i].current_time_working = clock_init(tellers[i].current_time_working);
@@ -85,6 +86,7 @@ void manage_teller(int i){
 				tellers[i].status = 2;
 				tellers[i].break_start = Clock;
 				tellers[i].break_end = add_clocks(Clock, breaker.break_duration[i]);
+				tellers[i].total_break = add_clocks(tellers[i].total_break, breaker.break_duration[i]);
 				tellers[i].num_breaks++;
 				//Now do metrics for ending the waiting period
 				tellers[i].current_time_waiting = subtract_Clocks(Clock, tellers[i].teller_start_wait);
@@ -112,6 +114,8 @@ void manage_teller(int i){
 				if(clock_compare(grabbed_customer.total_queue_time, max_customer_wait) == 0){
 					max_customer_wait = grabbed_customer.total_queue_time;
 				}
+				WallClock totalService = subtract_Clocks(tellers[i].service_end_time, tellers[i].service_start_time);
+				tellers[i].total_time_working = add_clocks(tellers[i].total_time_working, totalService);
 
 				//Now erase the first customer, this should then shift the other customers forward
 				waiting[0] = NULL;
@@ -119,6 +123,10 @@ void manage_teller(int i){
 				//Now do metrics for ending the waiting period
 				tellers[i].current_time_waiting = subtract_Clocks(Clock, tellers[i].teller_start_wait);
 				tellers[i].total_time_waiting = add_clocks(tellers[i].total_time_waiting,tellers[i].current_time_waiting);
+				tellers[i].waiting_count++;
+				tellers[i].current_time_waiting.hour = 0;
+				tellers[i].current_time_waiting.minute = 0;
+				tellers[i].current_time_waiting.second = 0;
 				if(clock_compare(tellers[i].current_time_waiting, tellers[i].max_time_waiting) == 0){
 					tellers[i].max_time_waiting = tellers[i].current_time_waiting;
 				}
@@ -135,6 +143,8 @@ void manage_teller(int i){
 				//Have the teller go back to waiting
 				tellers[i].status = 0;
 				tellers[i].teller_start_wait = Clock;
+				tellers[i].customers_served++;
+
 
 				//Now do the metrics for the service time
 				tellers[i].current_time_working = subtract_Clocks(Clock, tellers[i].service_start_time);

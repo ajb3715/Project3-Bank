@@ -14,7 +14,7 @@ extern WallClock total_customer_wait;
 extern WallClock max_customer_wait;
 extern WallClock fiveOclockSomewhere;
 extern int max_customer_waiting;
-extern int total_customers;
+//extern int total_customers;
 
 #define B1_Pin GPIO_PIN_13
 #define B1_GPIO_Port GPIOC

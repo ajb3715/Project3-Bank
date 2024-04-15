@@ -58,7 +58,7 @@ void init_customer(){
 	waiting_customers = 0;
 	HAL_RNG_GenerateRandomNumber(&hrng, &random_new_customer);
 	new_customer_time.hour = 0;
-	new_customer_time.minute = (random_new_customer % 5);
+	new_customer_time.minute = (random_new_customer % 3) + 1;
 	new_customer_time.second = (random_new_customer % 60);
 	new_customer_time = add_clocks(new_customer_time, Clock);
 	init_GPIO();
@@ -97,8 +97,8 @@ void run_customer(){
 //				sprintf(buf, "\r\n\r\n%d\r\n\r\n", waiting[1]->id);
 //				HAL_UART_Transmit(&huart2, (uint8_t*)buf, strlen(buf), 100);
 		HAL_RNG_GenerateRandomNumber(&hrng, &random_service_time);
-//		WallClock service_time = { .hour = 0, .minute = (*random_service_time % 7), .second = (*random_service_time % 60)};
-		WallClock service_time = { .hour = 0, .minute = 2, .second = 31};
+		WallClock service_time = { .hour = 0, .minute = (random_service_time % 5) + 1, .second = (random_service_time % 60)};
+//		WallClock service_time = { .hour = 0, .minute = 2, .second = 31};
 		Customer *c = malloc(sizeof(Customer));
 		c->service_time = service_time;
 		c->id = ++total_customers;
@@ -108,7 +108,7 @@ void run_customer(){
 //		waiting[waiting_customers + 1] = c;
 		HAL_RNG_GenerateRandomNumber(&hrng, &random_new_customer);
 		new_customer_time.hour = 0;
-		new_customer_time.minute = (random_new_customer % 5);
+		new_customer_time.minute = (random_new_customer % 3) + 1;
 		if(new_customer_time.minute == 0){
 			new_customer_time.minute = 1;
 		}

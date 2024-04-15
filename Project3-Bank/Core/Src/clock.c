@@ -131,5 +131,18 @@ WallClock subtract_Clocks(WallClock clock1, WallClock clock2) {
     return result;
 }
 
+WallClock average_time(WallClock avgClock, int number){
+	WallClock result;
+
+	int totalSeconds = (avgClock.hour * 3600) + (avgClock.minute * 60) + avgClock.second;
+
+	int avgTime = totalSeconds / number;
+
+	result.hour = avgTime / 3600;
+	result.minute = (avgTime % 3600) / 60;
+	result.second = (avgTime % 3600) % 60;
+
+	return result;
+}
 
 
