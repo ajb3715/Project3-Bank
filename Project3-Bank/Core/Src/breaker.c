@@ -51,19 +51,25 @@ void run_breaker(){
 	if(((!HAL_GPIO_ReadPin(Switch1_GPIO_Port, Switch1_Pin)) == 1 ) || (clock_compare(breaker.break_time[0],Clock) == 1)){
 		breaker.start_break[0] = 1;
 		if((!HAL_GPIO_ReadPin(Switch1_GPIO_Port, Switch1_Pin)) == 1 ){
-			tellers[0].break_end = clock_increment(Clock);
+			if(tellers[0].status == 2){
+				tellers[0].break_end = clock_increment(clock_increment(Clock));
+			}
 		}
 	}
 	if(((!HAL_GPIO_ReadPin(Switch2_GPIO_Port, Switch2_Pin)) == 1 ) || (clock_compare(breaker.break_time[1],Clock) == 1)){
 		breaker.start_break[1] = 1;
 		if((!HAL_GPIO_ReadPin(Switch2_GPIO_Port, Switch2_Pin)) == 1 ){
-			tellers[1].break_end = clock_increment(Clock);
+			if(tellers[1].status == 2){
+				tellers[1].break_end = clock_increment(clock_increment(Clock));
+			}
 		}
 	}
 	if(((!HAL_GPIO_ReadPin(Switch3_GPIO_Port, Switch3_Pin)) == 1 ) || (clock_compare(breaker.break_time[2],Clock) == 1)){
 		breaker.start_break[2] = 1;
 		if((!HAL_GPIO_ReadPin(Switch3_GPIO_Port, Switch3_Pin)) == 1 ){
-			tellers[2].break_end = clock_increment(Clock);
+			if(tellers[2].status == 2){
+				tellers[2].break_end = clock_increment(clock_increment(Clock));
+			}
 		}
 	}
 
