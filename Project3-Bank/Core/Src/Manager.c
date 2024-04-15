@@ -16,6 +16,7 @@
 
 int num[] = {0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0X80, 0X90};
 int seg[] = {0xF1, 0xF2, 0xF4, 0xF8};
+int report_sent = 0;
 
 int updateDigit(int spot, int num){
 	if (spot == 0){
@@ -39,8 +40,9 @@ void run_manager(){
 //			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
 //		}
 
-	if (clock_compare(Clock, fiveOclockSomewhere) == 0 && waiting_customers == 0 && tellers[0].status == 0 && tellers[1].status == 0 && tellers[2].status == 0){
+	if (clock_compare(Clock, fiveOclockSomewhere) == 0 && waiting_customers == 0 && tellers[0].status == 0 && tellers[1].status == 0 && tellers[2].status == 0 && report_sent == 0){
 		day_over = 1;
+		report_sent = 1;
 
 		// Base stats for everyone
 		int total_customers = 0;

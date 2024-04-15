@@ -538,9 +538,9 @@ void StartClock(void *argument)
 	osThreadYield();
 
 	}
-	if(day_over == 1){
-		Clock = clock_init(Clock);
-	}
+//	if(day_over == 1){
+//		Clock = clock_init(Clock);
+//	}
 	update_flag = 0;
 	osThreadYield();
   }
