@@ -33,14 +33,6 @@ int updateDigit(int spot, int num){
 }
 
 void run_manager(){
-//	if((Clock.minute % 2) == 0 && (Clock.second % 60) == 30){
-//			sprintf(buffer, "Current time: %d:%d:%d \r\n", Clock.hour, Clock.minute, Clock.second);
-//			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
-//			sprintf(buffer,"Customers waiting in Queue: %d \r\n", waiting_customers);
-//			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
-//			sprintf(buffer,"Teller 1: %d Teller 2: %d Teller 3: %d \r\n", tellers[1].status,tellers[2].status,tellers[3].status);
-//			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
-//		}
 
 	if (clock_compare(Clock, fiveOclockSomewhere) == 0 && waiting_customers == 0 && tellers[0].status == 0 && tellers[1].status == 0 && tellers[2].status == 0 && report_sent == 0){
 		day_over = 1;
@@ -59,19 +51,14 @@ void run_manager(){
 			total_teller_waits += tellers[i].waiting_count;
 			total_service_time = add_clocks(total_service_time, tellers[i].total_time_working);
 			total_t_waiting_time = add_clocks(total_t_waiting_time, tellers[i].total_time_waiting);
-//			char buffer[100];
-//					sprintf(buffer, "Current time: %d:%d:%d \r\n", total_t_waiting_time.hour, total_t_waiting_time.minute, total_t_waiting_time.second);
-//					HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
+
 		}
 
 		// Everyone stats calculated
 		WallClock avg_wait_time_customer = average_time(total_customer_wait, total_customers);
 		WallClock avg_time_with_teller = average_time(total_service_time, total_customers);
 		WallClock avg_wait_time_teller = average_time(total_t_waiting_time, total_teller_waits);
-		//WallClock max_queue_time = {.hour = 0, .minute = 0, .second = 0};
-//		char buffer[100];
-//		sprintf(buffer, "Customer wait time: %d:%d:%d \r\n", total_customer_wait.hour, total_customer_wait.minute, total_customer_wait.second);
-//		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
+
 
 		char buffer[256];
 		sprintf(buffer, "\r\n-------------------- End of Day Report ---------------------\r\n");
