@@ -8,6 +8,8 @@
 #ifndef INC_MANAGER_H_
 #define INC_MANAGER_H_
 
+extern int idle_hook_count;
+
 #define B1_Pin GPIO_PIN_13
 #define B1_GPIO_Port GPIOC
 #define SHLD_A5_Pin GPIO_PIN_0

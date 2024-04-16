@@ -13,10 +13,12 @@
 #include "stdio.h"
 #include "string.h"
 #include "cmsis_os.h"
+#include "manager.h"
 
 int num[] = {0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0X80, 0X90};
 int seg[] = {0xF1, 0xF2, 0xF4, 0xF8};
 int report_sent = 0;
+int idle_hook_count = 0;
 
 int updateDigit(int spot, int num){
 	if (spot == 0){
@@ -103,6 +105,8 @@ void run_manager(){
 			sprintf(buffer, "Min break time for Teller %d: %d:%d:%d\r\n\r\n", i, tellers[i].min_break.hour, tellers[i].min_break.minute, tellers[i].min_break.second);
 			HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
 		}
+		sprintf(buffer, "Idle Hook Counter %d\r\n", idle_hook_count);
+		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 100);
 	}
 
 	for (int i = 0; i < 4; i++){
@@ -112,6 +116,7 @@ void run_manager(){
 			shiftOut(SHLD_D8_SEG7_Data_GPIO_Port, SHLD_D8_SEG7_Data_Pin, SHLD_D7_SEG7_Clock_GPIO_Port, SHLD_D7_SEG7_Clock_Pin, seg[i]);
 			HAL_GPIO_WritePin(SHLD_D4_SEG7_Latch_GPIO_Port, SHLD_D4_SEG7_Latch_Pin, GPIO_PIN_SET);
 		}
+
 }
 
 
